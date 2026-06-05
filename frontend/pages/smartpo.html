@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart PO — Dewy Bar 🌿</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    .page-hero {
+      background: linear-gradient(135deg, #1a3a5c, #2d6a9f);
+      padding: 110px 0 56px; color: var(--white);
+    }
+    .po-steps {
+      display: flex; gap: 0; margin: 40px 0 0;
+    }
+    .po-step {
+      flex: 1; display: flex; flex-direction: column; align-items: center;
+      gap: 8px; text-align: center; position: relative;
+    }
+    .po-step::after {
+      content: ''; position: absolute;
+      top: 22px; left: 50%; width: 100%; height: 2px;
+      background: rgba(255,255,255,.3);
+    }
+    .po-step:last-child::after { display: none; }
+    .po-step-icon {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: rgba(255,255,255,.15); backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; position: relative; z-index: 1;
+    }
+    .po-step-label { font-size: .78rem; opacity: .8; }
+
+    .po-panel {
+      background: var(--white); border-radius: var(--radius);
+      padding: 28px; box-shadow: var(--shadow-sm);
+    }
+    .po-panel h3 { font-family: 'Manrope',sans-serif; font-weight: 700; margin-bottom: 20px; }
+    .location-list { display: flex; flex-direction: column; gap: 8px; }
+    .location-option {
+      padding: 12px 16px; border: 2px solid var(--cream-dark);
+      border-radius: var(--radius-sm); cursor: pointer; transition: var(--transition);
+      display: flex; align-items: center; gap: 10px; font-size: .9rem;
+    }
+    .location-option:hover, .location-option.selected {
+      border-color: var(--green-mid); background: var(--green-pale);
+    }
+    .order-count-badge {
+      margin-left: auto; padding: 3px 10px;
+      background: var(--green-mid); color: var(--white);
+      border-radius: 50px; font-size: .75rem; font-weight: 700;
+    }
+
+    /* Calendar */
+    .calendar-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 16px;
+    }
+    .cal-nav { background: var(--green-pale); border: none; border-radius: 8px; padding: 6px 12px; cursor: pointer; font-size: .9rem; transition: var(--transition); }
+    .cal-nav:hover { background: var(--green-mid); color: var(--white); }
+    .calendar-days-header {
+      display: grid; grid-template-columns: repeat(7, 1fr);
+      text-align: center; font-size: .78rem; font-weight: 700;
+      color: var(--text-light); margin-bottom: 8px;
+    }
+    .calendar-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+    .cal-day {
+      aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+      border-radius: 8px; font-size: .88rem; cursor: pointer; transition: var(--transition);
+    }
+    .cal-day:hover      { background: var(--green-pale); }
+    .cal-day.today      { background: var(--cream-dark); font-weight: 700; }
+    .cal-day.selected   { background: var(--green-mid) !important; color: var(--white) !important; font-weight: 700; }
+    .cal-day.other-month{ color: var(--text-light); opacity: .4; }
+    .cal-day.disabled   { opacity: .3; cursor: not-allowed; pointer-events: none; }
+    .cal-day.has-orders { position: relative; }
+    .cal-day.has-orders::after {
+      content: ''; position: absolute; bottom: 3px; left: 50%; transform: translateX(-50%);
+      width: 4px; height: 4px; border-radius: 50%; background: var(--gold);
+    }
+
+    /* History table */
+    .history-table { width: 100%; border-collapse: collapse; }
+    .history-table th, .history-table td {
+      padding: 12px 14px; text-align: left; font-size: .88rem;
+      border-bottom: 1px solid var(--cream-dark);
+    }
+    .history-table th { font-weight: 700; color: var(--text-mid); background: var(--cream-dark); }
+    .status-badge { padding: 4px 10px; border-radius: 50px; font-size: .75rem; font-weight: 700; }
+    .status-scheduled { background: #fff3cd; color: #856404; }
+    .status-done      { background: #d4edda; color: #155724; }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Firebase SDK -->
+  <!-- Firebase SDK -->
+  
+  
+  
+</head>
+<body>
+
+<!-- ═══ NAVBAR ═══ -->
+<nav class="navbar">
+  <div class="navbar-inner">
+    <a href="home-loggedin.html" class="navbar-logo-wrap">
+      <img src="../images/logo-full.png" alt="Dewy Bar" style="height:48px;width:auto;object-fit:contain;">
+      <div class="navbar-logo-text">
+        <span class="navbar-logo-title">DEWY BAR</span>
+        <span class="navbar-logo-sub">Healthy Buddy</span>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="katalog.html">Katalog</a></li>
+      <li><a href="smartpo.html" style="color:var(--green-mid);">Smart PO</a></li>
+      <li><a href="jejak-petani.html">Jejak Petani</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="keranjang.html" class="nav-cart">🛒 <span class="cart-badge">0</span></a>
+      <a href="profile.html" class="btn btn-outline btn-sm">👤 Profil</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══ PAGE HERO ═══ -->
+<section class="page-hero">
+  <div class="container">
+    <div class="badge-pill" style="background:rgba(255,255,255,.2);color:white;margin-bottom:12px;">📅 Smart Pre-Order</div>
+    <h1>Atur Jadwal Pesananmu</h1>
+    <p style="opacity:.8;margin-top:8px;">Pesan lebih awal, lebih praktis! Pilih tanggal & lokasi pengirimanmu.</p>
+    <div class="po-steps">
+      <div class="po-step"><div class="po-step-icon">📅</div><div class="po-step-label">Pilih Tanggal</div></div>
+      <div class="po-step"><div class="po-step-icon">📍</div><div class="po-step-label">Pilih Lokasi</div></div>
+      <div class="po-step"><div class="po-step-icon">🛒</div><div class="po-step-label">Pilih Produk</div></div>
+      <div class="po-step"><div class="po-step-icon">💳</div><div class="po-step-label">Bayar</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SMART PO FORM ═══ -->
+<section class="section">
+  <div class="container">
+    <div class="po-grid">
+
+      <!-- Left: Calendar + Location -->
+      <div style="display:flex;flex-direction:column;gap:20px;">
+
+        <!-- Calendar -->
+        <div class="po-panel">
+          <h3>📅 Pilih Tanggal Pengiriman</h3>
+          <div class="calendar-header">
+            <button class="cal-nav" onclick="prevMonth()">‹</button>
+            <span style="font-weight:700;" id="calTitle">—</span>
+            <button class="cal-nav" onclick="nextMonth()">›</button>
+          </div>
+          <div class="calendar-days-header">
+            <span>Min</span><span>Sen</span><span>Sel</span>
+            <span>Rab</span><span>Kam</span><span>Jum</span><span>Sab</span>
+          </div>
+          <div class="calendar-days" id="calDays"></div>
+          <div style="margin-top:16px;padding:10px;background:var(--green-pale);border-radius:var(--radius-sm);font-size:.82rem;color:var(--text-mid);">
+            📌 Tanggal dipilih: <strong id="selectedDateDisplay">Belum dipilih</strong>
+          </div>
+        </div>
+
+        <!-- Location picker -->
+        <div class="po-panel">
+          <h3>📍 Pilih Lokasi Pengiriman</h3>
+          <p style="font-size:.85rem;color:var(--text-mid);margin-bottom:16px;">
+            Lihat berapa orang yang sudah pesan di lokasi yang sama!
+          </p>
+          <div class="location-list" id="locationList"></div>
+        </div>
+
+      </div>
+
+      <!-- Right: Product selection + Summary -->
+      <div style="display:flex;flex-direction:column;gap:20px;">
+
+        <!-- Product mini list -->
+        <div class="po-panel">
+          <h3>🛒 Pilih Produk</h3>
+          <p style="font-size:.85rem;color:var(--text-mid);margin-bottom:16px;">
+            Tambahkan produk dari katalog, atau pilih dari rekomendasi di bawah:
+          </p>
+          <div id="poProductList" style="display:flex;flex-direction:column;gap:10px;"></div>
+          <a href="katalog.html" class="btn btn-outline btn-full" style="margin-top:16px;">
+            + Pilih dari Katalog
+          </a>
+        </div>
+
+        <!-- PO Summary -->
+        <div class="po-panel" style="background:linear-gradient(135deg,var(--green-deep),var(--green-mid));color:white;">
+          <h3 style="color:white;">📋 Ringkasan Pre-Order</h3>
+          <div style="display:flex;flex-direction:column;gap:10px;font-size:.9rem;">
+            <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.2);">
+              <span style="opacity:.8;">Tanggal</span>
+              <span style="font-weight:700;" id="poSumDate">Belum dipilih</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.2);">
+              <span style="opacity:.8;">Lokasi</span>
+              <span style="font-weight:700;" id="poSumLocation">Belum dipilih</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.2);">
+              <span style="opacity:.8;">Pemesanan di lokasi ini</span>
+              <span style="font-weight:700;" id="poSumCount">0 orang</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:8px 0;">
+              <span style="opacity:.8;">Produk dipilih</span>
+              <span style="font-weight:700;" id="poSumItems">0 item</span>
+            </div>
+          </div>
+          <button class="btn btn-gold btn-full btn-lg" style="margin-top:20px;" onclick="submitPreOrder()">
+            📅 Pesan Sekarang
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- History -->
+    <div style="margin-top:48px;">
+      <h2 style="margin-bottom:24px;">Riwayat Pre-Order</h2>
+      <div class="po-panel" id="historyPanel">
+        <div style="text-align:center;padding:30px;">
+          <div class="spinner" style="margin:0 auto;"></div>
+          <p style="margin-top:12px;color:var(--text-light);">Memuat riwayat...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="app.js"></script>
+
+<script>
+  requireAuth();
+
+  // ── Calendar ─────────────────────────────────────────────
+  const months = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+  let viewYear, viewMonth, selectedDate = null;
+  const today = new Date();
+
+  function initCalendar() {
+    viewYear  = today.getFullYear();
+    viewMonth = today.getMonth();
+    renderCalendar();
+  }
+
+  function renderCalendar() {
+    document.getElementById('calTitle').textContent = `${months[viewMonth]} ${viewYear}`;
+    const firstDay = new Date(viewYear, viewMonth, 1).getDay();
+    const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+    const daysInPrev  = new Date(viewYear, viewMonth, 0).getDate();
+
+    const grid = document.getElementById('calDays');
+    grid.innerHTML = '';
+
+    // Prev month padding
+    for (let i = firstDay - 1; i >= 0; i--) {
+      const d = document.createElement('div');
+      d.className = 'cal-day other-month';
+      d.textContent = daysInPrev - i;
+      grid.appendChild(d);
+    }
+
+    // Current month days
+    for (let day = 1; day <= daysInMonth; day++) {
+      const d = document.createElement('div');
+      d.className = 'cal-day';
+      d.textContent = day;
+
+      const thisDate = new Date(viewYear, viewMonth, day);
+      if (thisDate < today && thisDate.toDateString() !== today.toDateString())
+        d.classList.add('disabled');
+      if (thisDate.toDateString() === today.toDateString())
+        d.classList.add('today');
+
+      const dateStr = `${viewYear}-${String(viewMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+      if (selectedDate === dateStr) d.classList.add('selected');
+
+      d.addEventListener('click', () => selectDate(dateStr, d));
+      grid.appendChild(d);
+    }
+
+    // Next month padding
+    const total = firstDay + daysInMonth;
+    const remaining = total % 7 === 0 ? 0 : 7 - (total % 7);
+    for (let i = 1; i <= remaining; i++) {
+      const d = document.createElement('div');
+      d.className = 'cal-day other-month';
+      d.textContent = i;
+      grid.appendChild(d);
+    }
+  }
+
+  async function selectDate(dateStr, el) {
+    selectedDate = dateStr;
+    document.querySelectorAll('.cal-day').forEach(d => d.classList.remove('selected'));
+    el.classList.add('selected');
+    const [y,m,d] = dateStr.split('-');
+    document.getElementById('selectedDateDisplay').textContent =
+      `${parseInt(d)} ${months[parseInt(m)-1]} ${y}`;
+    document.getElementById('poSumDate').textContent =
+      `${parseInt(d)} ${months[parseInt(m)-1]} ${y}`;
+
+    // Fetch order count for selected location + date
+    updateOrderCount();
+  }
+
+  function prevMonth() { viewMonth--; if (viewMonth < 0) { viewMonth = 11; viewYear--; } renderCalendar(); }
+  function nextMonth() { viewMonth++; if (viewMonth > 11) { viewMonth = 0; viewYear++; } renderCalendar(); }
+
+  // ── Locations ────────────────────────────────────────────
+  const locations = [
+    { id: 'mlg-pusat', name: 'Malang Pusat',      icon: '🏙️' },
+    { id: 'mlg-utara', name: 'Malang Utara',      icon: '🌿' },
+    { id: 'batu',      name: 'Kota Batu',          icon: '⛰️' },
+    { id: 'surabaya',  name: 'Surabaya',           icon: '🌆' },
+    { id: 'blitar',    name: 'Blitar',             icon: '🌾' },
+    { id: 'kediri',    name: 'Kediri',             icon: '🌻' },
+  ];
+  let selectedLocation = null;
+
+  function renderLocations() {
+    document.getElementById('locationList').innerHTML = locations.map(loc => `
+      <div class="location-option" id="loc-${loc.id}" onclick="selectLocation('${loc.id}', '${loc.name}')">
+        <span>${loc.icon}</span>
+        <span>${loc.name}</span>
+        <span class="order-count-badge" id="count-${loc.id}">Pilih</span>
+      </div>`).join('');
+
+    // Load counts
+    locations.forEach(async loc => {
+      try {
+        const res = await API.getLocationCount('', loc.name);
+        const el = document.getElementById('count-' + loc.id);
+        if (el) el.textContent = 'Pilih';
+      } catch (_) {
+        const el = document.getElementById('count-' + loc.id);
+        if (el) el.textContent = 'Pilih';
+      }
+    });
+  }
+
+  function selectLocation(id, name) {
+    selectedLocation = name;
+    document.querySelectorAll('.location-option').forEach(el => el.classList.remove('selected'));
+    document.getElementById('loc-' + id)?.classList.add('selected');
+    document.getElementById('poSumLocation').textContent = name;
+    updateOrderCount();
+  }
+
+  async function updateOrderCount() {
+    if (!selectedDate || !selectedLocation) return;
+    try {
+      const res = await API.getLocationCount(selectedDate, selectedLocation);
+      document.getElementById('poSumCount').textContent = (res.count || 0) + ' orang';
+    } catch (_) {}
+  }
+
+  // ── Mini product list ─────────────────────────────────────
+  const emojiMap = { apel:'🍎', mangga:'🥭', pisang:'🍌', pepaya:'🧡', semangka:'🍉', jeruk:'🍊', jus:'🥤', smoothie:'🥤', fruit:'🍱' };
+  function getEmoji(name) { return Object.entries(emojiMap).find(([k]) => name.toLowerCase().includes(k))?.[1] || '🍃'; }
+
+  let poItems = {}; // { product_id: qty }
+  let poProducts = [];
+
+  function renderPoProducts() {
+    document.getElementById('poProductList').innerHTML = poProducts.map(p => {
+      const qty = poItems[p.id] || 0;
+      const price = p.flash_sale ? p.sale_price : p.price;
+      return `
+        <div style="display:flex;align-items:center;gap:12px;padding:10px;border:2px solid ${qty ? 'var(--green-mid)' : 'var(--cream-dark)'};border-radius:var(--radius-sm);transition:.3s;">
+          <span style="font-size:1.6rem;">${getEmoji(p.name)}</span>
+          <div style="flex:1;">
+            <div style="font-weight:600;font-size:.9rem;">${p.name}</div>
+            <div style="font-size:.78rem;color:var(--text-light);">${formatRp(price)}</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <button onclick="poQty(${p.id},-1)" class="qty-btn">−</button>
+            <span style="min-width:16px;text-align:center;font-weight:700;">${qty}</span>
+            <button onclick="poQty(${p.id},1)"  class="qty-btn">+</button>
+          </div>
+        </div>`;
+    }).join('');
+    const total = Object.values(poItems).reduce((a,b) => a+b, 0);
+    document.getElementById('poSumItems').textContent = total + ' item';
+  }
+
+  function poQty(pid, delta) {
+    poItems[pid] = Math.max(0, (poItems[pid] || 0) + delta);
+    if (!poItems[pid]) delete poItems[pid];
+    renderPoProducts();
+  }
+
+  // ── Submit Pre-Order ─────────────────────────────────────
+  async function submitPreOrder() {
+    if (!selectedDate)     { showToast('⚠️','Pilih Tanggal','Silakan pilih tanggal pengiriman'); return; }
+    if (!selectedLocation) { showToast('⚠️','Pilih Lokasi','Silakan pilih lokasi pengiriman'); return; }
+
+    const items = Object.entries(poItems).map(([pid, qty]) => ({ product_id: parseInt(pid), qty }));
+
+    try {
+      const res = await API.createPreOrder({ date: selectedDate, location: selectedLocation, items });
+      showToast('🎉','Pre-Order Berhasil!', res.message);
+      loadHistory();
+      // Reset
+      poItems = {};
+      renderPoProducts();
+      selectedDate = null;
+      selectedLocation = null;
+      renderCalendar();
+      document.getElementById('poSumDate').textContent     = 'Belum dipilih';
+      document.getElementById('poSumLocation').textContent = 'Belum dipilih';
+      document.getElementById('poSumItems').textContent    = '0 item';
+      document.querySelectorAll('.location-option').forEach(el => el.classList.remove('selected'));
+      document.getElementById('selectedDateDisplay').textContent = 'Belum dipilih';
+    } catch (err) {
+      showToast('❌','Gagal',err.message);
+    }
+  }
+
+  // ── Load history ─────────────────────────────────────────
+  async function loadHistory() {
+    try {
+      const data = await API.getPreOrders();
+      const panel = document.getElementById('historyPanel');
+      if (!data.length) {
+        panel.innerHTML = '<p style="text-align:center;color:var(--text-light);padding:24px;">Belum ada riwayat pre-order.</p>';
+        return;
+      }
+      panel.innerHTML = `
+        <table class="history-table">
+          <thead><tr>
+            <th>#</th><th>Tanggal</th><th>Lokasi</th><th>Produk</th><th>Status</th>
+          </tr></thead>
+          <tbody>
+            ${data.map(po => `
+              <tr>
+                <td style="font-weight:700;color:var(--green-deep);">Pesanan Pre Order</td>
+                <td>${po.date}</td>
+                <td>📍 ${po.location}</td>
+                <td>${po.items.length} item</td>
+                <td><span class="status-badge status-${po.status}">${po.status === 'scheduled' ? '📅 Terjadwal' : '✅ Selesai'}</span></td>
+              </tr>`).join('')}
+          </tbody>
+        </table>`;
+    } catch (err) {
+      document.getElementById('historyPanel').innerHTML =
+        `<p style="color:#e74c3c;text-align:center;padding:20px;">Gagal memuat: ${err.message}</p>`;
+    }
+  }
+
+  // ── Init ──────────────────────────────────────────────────
+  initCalendar();
+  renderLocations();
+  loadHistory();
+
+  // Load some products for selection
+  API.getProducts().then(products => {
+    poProducts = products.slice(0, 5);
+    renderPoProducts();
+  }).catch(() => {
+    document.getElementById('poProductList').innerHTML =
+      '<p style="color:var(--text-light);font-size:.85rem;text-align:center;">Gagal memuat produk</p>';
+  });
+</script>
+</body>
+</html>

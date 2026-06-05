@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Daftar — Dewy Bar 🌿</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <!-- Firebase SDK -->
+  <style>
+    .password-wrap { position: relative; }
+    .toggle-pass {
+      position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+      cursor: pointer; color: var(--text-light); font-size: .9rem; background: none;
+      border: none; padding: 4px;
+    }
+    .strength-bar { height: 4px; border-radius: 2px; margin-top: 6px; background: var(--cream-dark); overflow: hidden; }
+    .strength-fill { height: 100%; border-radius: 2px; transition: .3s; width: 0; }
+    .success-overlay {
+      position: fixed; inset: 0; background: rgba(26,77,46,.95);
+      z-index: 5000; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      color: white; text-align: center; padding: 24px;
+      opacity: 0; pointer-events: none; transition: .4s;
+    }
+    .success-overlay.show { opacity: 1; pointer-events: all; }
+    .success-check { font-size: 6rem; margin-bottom: 24px; animation: pop .5s .2s both; }
+    @keyframes pop { from { transform: scale(0); } to { transform: scale(1); } }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Firebase SDK -->
+  <!-- Firebase SDK -->
+  
+  
+  
+</head>
+<body>
+<div class="auth-page">
+  <!-- Left panel -->
+  <div class="auth-left">
+    <div class="logo" style="color:white; margin-bottom: 32px;">DEWY BAR 🌿</div>
+    <h2>Yuk, Gabung Jadi Bagian dari Dewy Bar!</h2>
+    <p>Daftar dan nikmati produk segar setiap hari langsung dari petani terbaik pilihan kami.</p>
+    <div class="auth-perks">
+      <div class="perk-item"><span class="perk-icon">🌿</span> Buah segar langsung dari kebun</div>
+      <div class="perk-item"><span class="perk-icon">📅</span> Jadwalkan pengiriman dengan Smart PO</div>
+      <div class="perk-item"><span class="perk-icon">🌾</span> Kenali petani di balik produkmu</div>
+      <div class="perk-item"><span class="perk-icon">💊</span> Pantau nutrisi harianmu</div>
+      <div class="perk-item"><span class="perk-icon">⚡</span> Akses Flash Sale eksklusif</div>
+    </div>
+  </div>
+
+  <!-- Right panel - form -->
+  <div class="auth-right">
+    <div class="auth-form">
+      <p class="badge-pill" style="text-align:left; margin-bottom:12px;">Gratis & Mudah</p>
+      <h2>Daftar Sekarang</h2>
+      <p class="subtitle">Isi data dirimu untuk membuat akun Dewy Bar.</p>
+
+      <form id="signupForm" novalidate>
+        <div class="form-group">
+          <label for="name">Nama Lengkap</label>
+          <input type="text" id="name" class="form-control" placeholder="Masukkan nama lengkap" required />
+          <div class="error-msg" id="nameErr" style="color:#e74c3c;font-size:.82rem;margin-top:4px;"></div>
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" class="form-control" placeholder="Masukkan email aktif" required />
+          <div class="error-msg" id="emailErr" style="color:#e74c3c;font-size:.82rem;margin-top:4px;"></div>
+        </div>
+        <div class="form-group">
+          <label for="phone">Nomor HP</label>
+          <input type="tel" id="phone" class="form-control" placeholder="Masukkan nomor HP" />
+        </div>
+        <div class="form-group">
+          <label for="address">Alamat Lengkap</label>
+          <input type="text" id="address" class="form-control" placeholder="Masukkan alamat lengkap" />
+        </div>
+        <div class="form-group">
+          <label for="password">Kata Sandi</label>
+          <div class="password-wrap">
+            <input type="password" id="password" class="form-control" placeholder="Buat kata sandi minimal 8 karakter" required />
+            <button type="button" class="toggle-pass" onclick="togglePass('password')">👁</button>
+          </div>
+          <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
+          <div id="strengthLabel" style="font-size:.78rem;margin-top:4px;color:var(--text-light);"></div>
+          <div class="error-msg" id="passErr" style="color:#e74c3c;font-size:.82rem;margin-top:4px;"></div>
+        </div>
+        <div class="form-group">
+          <label for="confirmPassword">Konfirmasi Kata Sandi</label>
+          <div class="password-wrap">
+            <input type="password" id="confirmPassword" class="form-control" placeholder="Ulangi kata sandi" required />
+            <button type="button" class="toggle-pass" onclick="togglePass('confirmPassword')">👁</button>
+          </div>
+          <div class="error-msg" id="confirmErr" style="color:#e74c3c;font-size:.82rem;margin-top:4px;"></div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-full btn-lg" id="submitBtn">
+          Daftar Sekarang
+        </button>
+      </form>
+
+      <p style="text-align:center;margin-top:24px;font-size:.9rem;color:var(--text-mid);">
+        Sudah punya akun? <a href="login.html" style="color:var(--green-mid);font-weight:700;">Masuk di sini</a>
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- Success overlay -->
+<div class="success-overlay" id="successOverlay">
+  <div class="success-check">✅</div>
+  <h1 style="font-family:'Manrope',sans-serif;font-size:2.5rem;margin-bottom:12px;">Selamat! 🎉</h1>
+  <p style="font-size:1.1rem;opacity:.9;margin-bottom:8px;">Akun kamu berhasil dibuat!</p>
+  <p style="opacity:.7;margin-bottom:32px;">Selamat bergabung di keluarga Dewy Bar 🌿</p>
+  <div class="spinner" style="margin:0 auto;"></div>
+  <p style="margin-top:16px;opacity:.6;font-size:.85rem;">Mengalihkan ke halaman utama...</p>
+</div>
+
+<script src="app.js"></script>
+
+<script>
+  redirectIfLoggedIn();
+
+  // Password strength
+  document.getElementById('password').addEventListener('input', function() {
+    const val = this.value;
+    let score = 0;
+    if (val.length >= 8)    score++;
+    if (/[A-Z]/.test(val)) score++;
+    if (/[0-9]/.test(val)) score++;
+    if (/[^A-Za-z0-9]/.test(val)) score++;
+
+    const fill  = document.getElementById('strengthFill');
+    const label = document.getElementById('strengthLabel');
+    const colors = ['#e74c3c','#e67e22','#f1c40f','#27ae60'];
+    const labels = ['Lemah','Cukup','Baik','Kuat 💪'];
+    fill.style.width     = (score * 25) + '%';
+    fill.style.background = colors[score - 1] || '#e74c3c';
+    label.textContent    = val.length ? labels[score - 1] || 'Lemah' : '';
+  });
+
+  function togglePass(id) {
+    const inp = document.getElementById(id);
+    inp.type  = inp.type === 'password' ? 'text' : 'password';
+  }
+
+  document.getElementById('signupForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name     = document.getElementById('name').value.trim();
+    const email    = document.getElementById('email').value.trim();
+    const phone    = document.getElementById('phone').value.trim();
+    const address  = document.getElementById('address').value.trim();
+    const password = document.getElementById('password').value;
+    const confirm  = document.getElementById('confirmPassword').value;
+
+    // Reset errors
+    ['nameErr','emailErr','passErr','confirmErr'].forEach(id =>
+      document.getElementById(id).textContent = '');
+
+    let valid = true;
+    if (!name)   { document.getElementById('nameErr').textContent = 'Nama tidak boleh kosong'; valid = false; }
+    if (!email || !email.includes('@')) { document.getElementById('emailErr').textContent = 'Email tidak valid'; valid = false; }
+    if (password.length < 8) { document.getElementById('passErr').textContent = 'Password minimal 8 karakter'; valid = false; }
+    if (password !== confirm) { document.getElementById('confirmErr').textContent = 'Konfirmasi password tidak cocok'; valid = false; }
+    if (!valid) return;
+
+    const btn = document.getElementById('submitBtn');
+    btn.textContent = 'Mendaftarkan...';
+    btn.disabled = true;
+
+    try {
+      const res = await API.register({ name, email, phone, address, password });
+      Auth.setSession(res.token, res.user);
+      document.getElementById('successOverlay').classList.add('show');
+      setTimeout(() => { window.location.href = 'home-loggedin.html'; }, 2500);
+    } catch (err) {
+      showToast('❌', 'Gagal Daftar', err.message);
+      btn.textContent = 'Daftar Sekarang';
+      btn.disabled = false;
+    }
+  });
+</script>
+</body>
+</html>

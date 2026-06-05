@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Keranjang — Dewy Bar 🌿</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    .page-hero {
+      background: linear-gradient(135deg, var(--green-deep), var(--green-mid));
+      padding: 110px 0 48px; color: var(--white);
+    }
+    .empty-cart {
+      text-align: center; padding: 100px 24px;
+    }
+    .empty-cart .icon { font-size: 5rem; margin-bottom: 20px; }
+    .delete-btn {
+      background: none; border: none; color: var(--text-light);
+      font-size: 1.2rem; cursor: pointer; transition: var(--transition);
+      padding: 6px;
+    }
+    .delete-btn:hover { color: #e74c3c; transform: scale(1.2); }
+    .promo-input {
+      display: flex; gap: 8px; margin-top: 16px;
+    }
+    .promo-input input {
+      flex: 1; padding: 10px 14px; border-radius: var(--radius-sm);
+      border: 2px solid var(--cream-dark); font-size: .88rem;
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Firebase SDK -->
+  <!-- Firebase SDK -->
+  
+  
+  
+</head>
+<body>
+
+<!-- ═══ NAVBAR ═══ -->
+<nav class="navbar">
+  <div class="navbar-inner">
+    <a href="home-loggedin.html" class="navbar-logo-wrap">
+      <img src="../images/logo-full.png" alt="Dewy Bar" style="height:48px;width:auto;object-fit:contain;">
+      <div class="navbar-logo-text">
+        <span class="navbar-logo-title">DEWY BAR</span>
+        <span class="navbar-logo-sub">Healthy Buddy</span>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="katalog.html">Katalog</a></li>
+      <li><a href="smartpo.html">Smart PO</a></li>
+      <li><a href="jejak-petani.html">Jejak Petani</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="keranjang.html" class="nav-cart" style="background:var(--green-mid);color:white;">
+        🛒 Keranjang <span class="cart-badge" id="cartBadgeNav">0</span>
+      </a>
+      <a href="profile.html" class="btn btn-outline btn-sm">👤 Profil</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══ PAGE HERO ═══ -->
+<section class="page-hero">
+  <div class="container">
+    <div class="badge-pill" style="background:rgba(255,255,255,.2);color:white;margin-bottom:12px;">🛒 Belanja</div>
+    <h1>Keranjang Belanja</h1>
+    <p style="opacity:.8;margin-top:8px;">Pastikan semua sudah sesuai ya!</p>
+  </div>
+</section>
+
+<!-- ═══ CART CONTENT ═══ -->
+<section class="section">
+  <div class="container">
+
+    <!-- Loading state -->
+    <div id="loadingState" style="text-align:center;padding:60px;">
+      <div class="spinner" style="margin:0 auto;"></div>
+      <p style="margin-top:12px;color:var(--text-light);">Memuat keranjang...</p>
+    </div>
+
+    <!-- Empty state -->
+    <div id="emptyState" class="empty-cart hidden">
+      <div class="icon">🛒</div>
+      <h2>Keranjangmu Masih Kosong</h2>
+      <p style="color:var(--text-mid);margin:12px 0 28px;">Yuk mulai belanja buah segar pilihanmu!</p>
+      <a href="katalog.html" class="btn btn-primary btn-lg">Jelajahi Produk</a>
+    </div>
+
+    <!-- Cart with items -->
+    <div id="cartContent" class="cart-layout hidden">
+      <!-- Left: items list -->
+      <div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+          <h3 id="itemsTitle">Produk Dipilih</h3>
+          <button onclick="clearCart()" style="color:#e74c3c;font-size:.85rem;font-weight:600;background:none;border:none;cursor:pointer;">
+            🗑 Kosongkan
+          </button>
+        </div>
+        <div id="cartItemsList"></div>
+        <a href="katalog.html" style="display:inline-flex;align-items:center;gap:8px;margin-top:16px;color:var(--green-mid);font-weight:600;font-size:.9rem;">
+          ← Lanjut Belanja
+        </a>
+      </div>
+
+      <!-- Right: order summary -->
+      <div class="order-summary">
+        <h3>Ringkasan Pesanan</h3>
+        <div class="summary-row">
+          <span id="summaryItemCount">0 produk</span>
+          <span id="summarySubtotal">Rp 0</span>
+        </div>
+        <div class="summary-row">
+          <span>Ongkos Kirim</span>
+          <span style="color:var(--green-mid);font-weight:600;">Gratis 🎉</span>
+        </div>
+        <div class="promo-input">
+          <input type="text" id="promoCode" placeholder="Kode promo..." />
+          <button class="btn btn-outline btn-sm" onclick="applyPromo()">Pakai</button>
+        </div>
+        <div class="summary-row" id="discountRow" style="display:none;">
+          <span style="color:var(--green-mid);">Diskon</span>
+          <span style="color:var(--green-mid);" id="discountVal">- Rp 0</span>
+        </div>
+        <div class="summary-row total" style="margin-top:12px;padding-top:16px;border-top:2px solid var(--cream-dark);">
+          <span>Total</span>
+          <span id="summaryTotal">Rp 0</span>
+        </div>
+        <button class="btn btn-primary btn-full btn-lg" style="margin-top:20px;" onclick="goCheckout()">
+          Lanjut ke Checkout →
+        </button>
+        <p style="text-align:center;font-size:.8rem;color:var(--text-light);margin-top:12px;">
+          🔒 Pembayaran aman & terenkripsi
+        </p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="container">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;">
+      <img src="../images/logo-full.png" alt="Dewy Bar" style="height:64px;width:auto;object-fit:contain;margin-bottom:16px;">
+      <p style="opacity:.7;font-size:.85rem;">© 2025 Dewy Bar</p>
+    </div>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+
+<script>
+  requireAuth();
+
+  const emojiMap = { apel:'🍎', mangga:'🥭', pisang:'🍌', pepaya:'🧡', semangka:'🍉', jeruk:'🍊', jus:'🥤', smoothie:'🥤', fruit:'🍱' };
+  function getEmoji(name) {
+    const lower = name.toLowerCase();
+    return Object.entries(emojiMap).find(([k]) => lower.includes(k))?.[1] || '🍃';
+  }
+
+  let cartData = null;
+  let discount = 0;
+
+  async function loadCart() {
+    document.getElementById('loadingState').classList.remove('hidden');
+    document.getElementById('emptyState').classList.add('hidden');
+    document.getElementById('cartContent').classList.add('hidden');
+
+    try {
+      cartData = await API.getCart();
+      document.getElementById('loadingState').classList.add('hidden');
+
+      if (!cartData.items || cartData.items.length === 0) {
+        document.getElementById('emptyState').classList.remove('hidden');
+        document.querySelector('.cart-badge').textContent = 0;
+        return;
+      }
+
+      document.getElementById('cartContent').classList.remove('hidden');
+      renderCart();
+    } catch (err) {
+      document.getElementById('loadingState').innerHTML =
+        `<p style="color:#e74c3c;">Gagal memuat keranjang: ${err.message}</p>`;
+    }
+  }
+
+  function renderCart() {
+    const items = cartData.items;
+    document.getElementById('itemsTitle').textContent = `${items.length} Produk Dipilih`;
+    document.querySelector('.cart-badge').textContent = items.length;
+
+    document.getElementById('cartItemsList').innerHTML = items.map(item => {
+      const price = item.flash_sale ? item.sale_price : item.price;
+      return `
+        <div class="cart-item-card">
+          <div class="cart-item-img">${getEmoji(item.name)}</div>
+          <div class="cart-item-info" style="flex:1;">
+            <h4>${item.name}</h4>
+            <div style="font-size:.82rem;color:var(--text-light);margin-bottom:8px;">${item.weight}g · ${item.category}</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+              <div class="qty-control">
+                <button class="qty-btn" onclick="changeQty(${item.id}, ${item.qty - 1})">−</button>
+                <span style="font-weight:700;min-width:20px;text-align:center;">${item.qty}</span>
+                <button class="qty-btn" onclick="changeQty(${item.id}, ${item.qty + 1})">+</button>
+              </div>
+              <span style="font-weight:700;color:var(--green-deep);">${formatRp(price * item.qty)}</span>
+            </div>
+          </div>
+          <button class="delete-btn" onclick="removeItem(${item.id})" title="Hapus">🗑</button>
+        </div>`;
+    }).join('');
+
+    updateSummary();
+  }
+
+  function updateSummary() {
+    const items    = cartData.items;
+    const subtotal = cartData.total;
+    const total    = Math.max(0, subtotal - discount);
+
+    document.getElementById('summaryItemCount').textContent = `${items.length} produk`;
+    document.getElementById('summarySubtotal').textContent  = formatRp(subtotal);
+    document.getElementById('summaryTotal').textContent     = formatRp(total);
+
+    if (discount > 0) {
+      document.getElementById('discountRow').style.display = 'flex';
+      document.getElementById('discountVal').textContent   = '- ' + formatRp(discount);
+    }
+  }
+
+  async function changeQty(pid, qty) {
+    try {
+      await API.updateCart(pid, qty);
+      await loadCart();
+    } catch (err) { showToast('❌','Gagal',err.message); }
+  }
+
+  async function removeItem(pid) {
+    try {
+      await API.removeFromCart(pid);
+      showToast('🗑','Dihapus','Item berhasil dihapus dari keranjang');
+      await loadCart();
+    } catch (err) { showToast('❌','Gagal',err.message); }
+  }
+
+  async function clearCart() {
+    if (!confirm('Kosongkan semua keranjang?')) return;
+    try {
+      const items = cartData.items;
+      await Promise.all(items.map(i => API.removeFromCart(i.id)));
+      showToast('🗑','Keranjang Dikosongkan','Semua item telah dihapus');
+      await loadCart();
+    } catch (err) { showToast('❌','Gagal',err.message); }
+  }
+
+  async function applyPromo() {
+    const code = document.getElementById('promoCode').value.trim().toUpperCase();
+    if (!code) { showToast('⚠️','Isi Kode','Masukkan kode promo terlebih dahulu'); return; }
+    try {
+      const res = await API.validatePromo(code, cartData.total);
+      discount = res.discount;
+      updateSummary();
+      showToast('🎉','Promo Berhasil!', res.label + ' diterapkan!');
+    } catch(err) {
+      showToast('❌','Kode Salah', err.message || 'Kode promo tidak valid');
+    }
+  }
+
+  function goCheckout() {
+    if (!cartData || !cartData.items.length) return;
+    const total = Math.max(0, cartData.total - discount);
+    localStorage.setItem('dewybar_checkout_discount', discount);
+    window.location.href = 'checkout.html';
+  }
+
+  loadCart();
+</script>
+</body>
+</html>

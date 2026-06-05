@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Katalog — Dewy Bar 🌿</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    .filter-bar { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 28px; }
+    .sort-select {
+      padding: 10px 16px; border-radius: 50px; border: 2px solid var(--cream-dark);
+      background: var(--white); font-family: inherit; font-size: .88rem;
+      color: var(--text-mid); cursor: pointer;
+    }
+    .products-count { color: var(--text-light); font-size: .9rem; margin-left: auto; }
+    .empty-state { text-align: center; padding: 80px 20px; color: var(--text-mid); }
+    .empty-state .empty-icon { font-size: 4rem; margin-bottom: 16px; }
+    /* detail modal */
+    .detail-img { font-size: 6rem; text-align: center; padding: 32px; background: var(--green-pale); border-radius: var(--radius); margin-bottom: 24px; }
+    .detail-badges { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+    .detail-badge { padding: 4px 12px; border-radius: 50px; font-size: .78rem; font-weight: 700; background: var(--green-pale); color: var(--green-mid); }
+    .detail-section { margin-bottom: 16px; }
+    .detail-section h4 { font-family: 'Manrope',sans-serif; font-weight: 700; margin-bottom: 6px; font-size: .9rem; color: var(--text-mid); text-transform: uppercase; letter-spacing: .5px; }
+    .farmer-mini { display: flex; align-items: center; gap: 12px; padding: 14px; background: var(--green-pale); border-radius: var(--radius-sm); }
+    .farmer-mini-icon { font-size: 2rem; }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Firebase SDK -->
+  <!-- Firebase SDK -->
+  
+  
+  
+</head>
+<body>
+
+<!-- ═══ NAVBAR ═══ -->
+<nav class="navbar">
+  <div class="navbar-inner">
+    <a href="home-loggedin.html" class="navbar-logo-wrap">
+      <img src="../images/logo-full.png" alt="Dewy Bar" style="height:48px;width:auto;object-fit:contain;">
+      <div class="navbar-logo-text">
+        <span class="navbar-logo-title">DEWY BAR</span>
+        <span class="navbar-logo-sub">Healthy Buddy</span>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="katalog.html" style="color:var(--green-mid);">Katalog</a></li>
+      <li><a href="smartpo.html">Smart PO</a></li>
+      <li><a href="jejak-petani.html">Jejak Petani</a></li>
+      <li><a href="home-loggedin.html#faq">FAQ</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="keranjang.html" class="nav-cart">🛒 <span class="cart-badge">0</span></a>
+      <a href="profile.html" class="btn btn-outline btn-sm">👤 Profil</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══ KATALOG HERO ═══ -->
+<section class="katalog-hero">
+  <div class="container">
+    <div class="badge-pill" style="background:rgba(255,255,255,.2);color:white;margin-bottom:12px;">🛍️ Toko Kami</div>
+    <h1>Temukan Kesegaran Terbaik</h1>
+    <p style="opacity:.85;margin-top:8px;">Pilih produk favoritmu dari buah segar dan olahan pilihan petani terbaik</p>
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Cari produk... (apel, jus mangga, dll)" />
+      <button class="btn btn-gold btn-sm" onclick="doSearch()">🔍 Cari</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ MAIN CATALOG ═══ -->
+<section class="section">
+  <div class="container">
+    <!-- Flash Sale Banner -->
+    <div class="flash-sale-banner fade-up" id="flashBanner">
+      <div>
+        <h3>⚡ Flash Sale Aktif!</h3>
+        <p style="opacity:.85;">Produk pilihan dengan harga spesial — terbatas!</p>
+      </div>
+      <button class="btn btn-gold" onclick="filterByTab('flash')">Lihat Flash Sale</button>
+    </div>
+
+    <!-- Category tabs -->
+    <div class="category-tabs">
+      <button class="tab-btn active" onclick="filterByTab('all')" id="tab-all">🌿 Semua Produk</button>
+      <button class="tab-btn" onclick="filterByTab('buah')" id="tab-buah">🍎 Buah Segar</button>
+      <button class="tab-btn" onclick="filterByTab('olahan')" id="tab-olahan">🥤 Olahan Segar (Jus, Smoothies, dll)</button>
+      <button class="tab-btn" onclick="filterByTab('flash')" id="tab-flash">⚡ Flash Sale</button>
+      <button class="tab-btn" onclick="filterByTab('best')" id="tab-best">🏆 Best Seller</button>
+    </div>
+
+    <!-- Filter bar -->
+    <div class="filter-bar">
+      <span style="font-weight:600;font-size:.9rem;">Urutkan:</span>
+      <select class="sort-select" id="sortSelect" onchange="renderProducts()">
+        <option value="default">Default</option>
+        <option value="price-asc">Harga ↑</option>
+        <option value="price-desc">Harga ↓</option>
+        <option value="rating">Rating Tertinggi</option>
+        <option value="name">Nama A-Z</option>
+      </select>
+      <span class="products-count" id="productsCount">Memuat...</span>
+    </div>
+
+    <!-- Products grid -->
+    <div class="grid-4" id="productsGrid">
+      <div style="grid-column:1/-1;text-align:center;padding:60px;">
+        <div class="spinner" style="margin:0 auto;"></div>
+        <p style="margin-top:12px;color:var(--text-light);">Memuat produk...</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PRODUCT DETAIL MODAL ═══ -->
+<div class="modal-overlay" id="detailModal">
+  <div class="modal" style="max-width:560px;max-height:90vh;overflow-y:auto;" id="detailContent">
+    <!-- filled dynamically -->
+  </div>
+</div>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="container">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;">
+      <img src="../images/logo-full.png" alt="Dewy Bar" style="height:64px;width:auto;object-fit:contain;margin-bottom:16px;">
+      <p style="opacity:.7;font-size:.85rem;">© 2025 Dewy Bar · Buah segar langsung dari petani</p>
+    </div>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+
+<script>
+  requireAuth();
+
+  let allProducts = [];
+  let currentFilter = 'all';
+  const emojiMap = { apel:'🍎', mangga:'🥭', pisang:'🍌', pepaya:'🧡', semangka:'🍉', jeruk:'🍊', jus:'🥤', smoothie:'🥤', fruit:'🍱', anggur:'🍇' };
+
+  function getEmoji(name) {
+    const lower = name.toLowerCase();
+    return Object.entries(emojiMap).find(([k]) => lower.includes(k))?.[1] || '🍃';
+  }
+
+  function filterByTab(tab) {
+    currentFilter = tab;
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    const el = document.getElementById('tab-' + (tab === 'flash' ? 'flash' : tab === 'best' ? 'best' : tab));
+    if (el) el.classList.add('active');
+    renderProducts();
+  }
+
+  function renderProducts() {
+    const search = (document.getElementById('searchInput').value || '').toLowerCase();
+    const sort   = document.getElementById('sortSelect').value;
+
+    let filtered = allProducts.filter(p => {
+      if (currentFilter === 'buah')   return p.category === 'buah';
+      if (currentFilter === 'olahan') return p.category === 'olahan';
+      if (currentFilter === 'flash')  return p.flash_sale;
+      if (currentFilter === 'best')   return p.best_seller;
+      return true;
+    }).filter(p => !search || p.name.toLowerCase().includes(search));
+
+    if (sort === 'price-asc')  filtered.sort((a,b) => a.price - b.price);
+    if (sort === 'price-desc') filtered.sort((a,b) => b.price - a.price);
+    if (sort === 'rating')     filtered.sort((a,b) => b.rating - a.rating);
+    if (sort === 'name')       filtered.sort((a,b) => a.name.localeCompare(b.name));
+
+    document.getElementById('productsCount').textContent = `${filtered.length} produk ditemukan`;
+
+    const grid = document.getElementById('productsGrid');
+    if (!filtered.length) {
+      grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;">
+        <div class="empty-icon">🔍</div>
+        <h3>Produk tidak ditemukan</h3>
+        <p>Coba kata kunci lain atau pilih kategori berbeda</p>
+      </div>`;
+      return;
+    }
+
+    grid.innerHTML = filtered.map(p => {
+      const price = p.flash_sale ? p.sale_price : p.price;
+      const badge = p.flash_sale
+        ? `<span class="product-badge sale">⚡ Flash Sale</span>`
+        : p.best_seller ? `<span class="product-badge">🏆 Best Seller</span>` : '';
+      return `
+        <div class="product-card fade-up">
+          ${badge}
+          <div class="product-img" onclick="openDetail(${p.id})" style="cursor:pointer;">${getEmoji(p.name)}</div>
+          <div class="product-info">
+            <h3>${p.name}</h3>
+            <div class="product-meta">
+              <span class="stars">${renderStars(p.rating)}</span>
+              <span>${p.rating}</span>·<span>${p.weight}g</span>
+            </div>
+            <div class="product-price">
+              <span class="price-now">${formatRp(price)}</span>
+              ${p.flash_sale ? `<span class="price-old">${formatRp(p.price)}</span>` : ''}
+            </div>
+            <div style="display:flex;gap:8px;">
+              <button class="btn btn-outline btn-sm" onclick="openDetail(${p.id})" style="flex:1;">Lihat Detail</button>
+              <button class="btn btn-primary btn-sm" onclick="addCart(${p.id})" style="flex:1;">+ Keranjang</button>
+            </div>
+          </div>
+        </div>`;
+    }).join('');
+
+    initFadeUps();
+  }
+
+  async function openDetail(id) {
+    const modal   = document.getElementById('detailModal');
+    const content = document.getElementById('detailContent');
+    content.innerHTML = `<div style="text-align:center;padding:40px;"><div class="spinner" style="margin:0 auto;"></div></div>`;
+    openModal('detailModal');
+
+    try {
+      const p = await API.getProduct(id);
+      const price = p.flash_sale ? p.sale_price : p.price;
+      content.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+          <h3 style="font-family:'Manrope',sans-serif;">${p.name}</h3>
+          <button onclick="closeModal('detailModal')" style="font-size:1.5rem;color:var(--text-light);background:none;border:none;cursor:pointer;">×</button>
+        </div>
+        <div class="detail-img">${getEmoji(p.name)}</div>
+        <div class="detail-badges">
+          ${p.flash_sale  ? '<span class="detail-badge" style="background:#fde8e8;color:#e74c3c;">⚡ Flash Sale</span>' : ''}
+          ${p.best_seller ? '<span class="detail-badge">🏆 Best Seller</span>' : ''}
+          <span class="detail-badge">${p.category === 'buah' ? '🍎 Buah Segar' : '🥤 Olahan'}</span>
+          <span class="detail-badge">${p.weight}g</span>
+          <span class="detail-badge">⭐ ${p.rating}</span>
+        </div>
+        <div style="margin-bottom:20px;">
+          <span class="price-now" style="font-size:1.5rem;">${formatRp(price)}</span>
+          ${p.flash_sale ? `<span class="price-old" style="font-size:1rem;margin-left:8px;">${formatRp(p.price)}</span>` : ''}
+        </div>
+        <div class="detail-section">
+          <h4>Deskripsi</h4>
+          <p style="color:var(--text-mid);font-size:.92rem;line-height:1.7;">${p.description}</p>
+        </div>
+        <div class="detail-section">
+          <h4>💊 Kandungan Vitamin</h4>
+          <p style="color:var(--text-mid);font-size:.92rem;">${p.vitamins}</p>
+        </div>
+        <div class="detail-section">
+          <h4>🎉 Fun Fact</h4>
+          <p style="color:var(--text-mid);font-size:.92rem;font-style:italic;">"${p.fun_fact}"</p>
+        </div>
+        ${p.farmer ? `
+        <div class="detail-section">
+          <h4>🌾 Profil Petani</h4>
+          <div class="farmer-mini">
+            <div class="farmer-mini-icon">👨‍🌾</div>
+            <div>
+              <strong>${p.farmer.name}</strong>
+              <div style="font-size:.85rem;color:var(--text-mid);">📍 ${p.farmer.location}</div>
+              <div style="font-size:.82rem;color:var(--text-mid);margin-top:4px;">${p.farmer.bio.substring(0,80)}...</div>
+            </div>
+          </div>
+        </div>` : ''}
+        <div style="display:flex;gap:12px;margin-top:24px;">
+          <button class="btn btn-outline" style="flex:1;" onclick="closeModal('detailModal')">Tutup</button>
+          <button class="btn btn-primary" style="flex:1;" onclick="addCart(${p.id});closeModal('detailModal');">+ Tambah ke Keranjang</button>
+        </div>`;
+    } catch (err) {
+      content.innerHTML = `<p style="padding:20px;color:#e74c3c;">${err.message}</p>`;
+    }
+  }
+
+  async function addCart(pid) {
+    try {
+      await API.addToCart({ product_id: pid, qty: 1 });
+      showToast('✅','Ditambahkan!','Produk berhasil masuk keranjang');
+      updateCartBadge();
+    } catch (err) {
+      showToast('❌','Gagal',err.message);
+    }
+  }
+
+  function doSearch() { renderProducts(); }
+  document.getElementById('searchInput').addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(); });
+
+  // Load
+  API.getProducts().then(data => {
+    allProducts = data;
+    // Check URL param
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('filter') === 'flash_sale') filterByTab('flash');
+    else renderProducts();
+  }).catch(() => {
+    document.getElementById('productsGrid').innerHTML =
+      '<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--text-light);">⚠️ Gagal memuat produk. Coba muat ulang halaman.</div>';
+  });
+
+  // Close modal on overlay click
+  document.getElementById('detailModal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal('detailModal');
+  });
+</script>
+</body>
+</html>

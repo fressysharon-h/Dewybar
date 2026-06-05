@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jejak Petani — Dewy Bar 🌿</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    .page-hero {
+      background: linear-gradient(160deg, #2d5a27, #1a4d2e 50%, #2d7a4f);
+      padding: 110px 0 72px; color: var(--white);
+      position: relative; overflow: hidden;
+    }
+    .page-hero::before {
+      content: '🌾🌱🌿'; font-size: 12rem; opacity: .05;
+      position: absolute; right: -60px; bottom: -30px; letter-spacing: 40px;
+    }
+    .farmer-detail-overlay {
+      position: fixed; inset: 0; z-index: 2000;
+      background: rgba(0,0,0,.5); backdrop-filter: blur(4px);
+      overflow-y: auto; padding: 24px;
+      opacity: 0; pointer-events: none; transition: .3s;
+    }
+    .farmer-detail-overlay.open { opacity: 1; pointer-events: all; }
+    .farmer-detail-panel {
+      background: var(--white); border-radius: var(--radius);
+      max-width: 700px; margin: 0 auto;
+      transform: translateY(20px); transition: .3s;
+    }
+    .farmer-detail-overlay.open .farmer-detail-panel { transform: translateY(0); }
+    .farmer-detail-hero {
+      background: linear-gradient(135deg, var(--green-deep), var(--green-mid));
+      padding: 48px 40px 32px; color: var(--white); border-radius: var(--radius) var(--radius) 0 0;
+      display: flex; align-items: center; gap: 24px;
+    }
+    .farmer-avatar-large {
+      width: 90px; height: 90px; border-radius: 50%;
+      background: rgba(255,255,255,.2); display: flex; align-items: center;
+      justify-content: center; font-size: 3rem; flex-shrink: 0;
+      border: 4px solid rgba(255,255,255,.3);
+    }
+    .farmer-detail-body { padding: 32px 40px; }
+    .stat-grid {
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin: 24px 0;
+    }
+    .stat-card {
+      background: var(--green-pale); border-radius: var(--radius-sm);
+      padding: 16px; text-align: center;
+    }
+    .stat-val   { font-size: 1.4rem; font-weight: 700; color: var(--green-deep); }
+    .stat-label { font-size: .78rem; color: var(--text-mid); margin-top: 4px; }
+    .product-mini-list { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .product-mini {
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px; background: var(--cream); border-radius: var(--radius-sm);
+      cursor: pointer; transition: var(--transition);
+    }
+    .product-mini:hover { background: var(--green-pale); }
+    .product-mini-icon { font-size: 1.8rem; }
+    .product-mini-info { flex: 1; }
+    .product-mini-info .name { font-weight: 600; font-size: .88rem; }
+    .product-mini-info .price { font-size: .78rem; color: var(--green-mid); font-weight: 700; }
+    .close-detail {
+      position: absolute; top: 16px; right: 20px;
+      background: rgba(255,255,255,.2); border: none; color: white;
+      width: 36px; height: 36px; border-radius: 50%;
+      font-size: 1.3rem; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: .3s;
+    }
+    .close-detail:hover { background: rgba(255,255,255,.35); }
+    .map-placeholder {
+      background: var(--green-pale); border-radius: var(--radius-sm);
+      height: 180px; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 8px; color: var(--text-mid); font-size: .9rem;
+      margin-bottom: 24px;
+    }
+    .map-pin { font-size: 2.5rem; }
+  </style>
+  <!-- Firebase SDK -->
+  <!-- Firebase SDK -->
+  
+  
+  
+</head>
+<body>
+
+<!-- ═══ NAVBAR ═══ -->
+<nav class="navbar">
+  <div class="navbar-inner">
+    <a href="home-loggedin.html" class="navbar-logo-wrap">
+      <img src="../images/logo-full.png" alt="Dewy Bar" style="height:48px;width:auto;object-fit:contain;">
+      <div class="navbar-logo-text">
+        <span class="navbar-logo-title">DEWY BAR</span>
+        <span class="navbar-logo-sub">Healthy Buddy</span>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="katalog.html">Katalog</a></li>
+      <li><a href="smartpo.html">Smart PO</a></li>
+      <li><a href="jejak-petani.html" style="color:var(--green-mid);">Jejak Petani</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="keranjang.html" class="nav-cart">🛒 <span class="cart-badge">0</span></a>
+      <a href="profile.html" class="btn btn-outline btn-sm">👤 Profil</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══ PAGE HERO ═══ -->
+<section class="page-hero">
+  <div class="container">
+    <div class="badge-pill" style="background:rgba(255,255,255,.2);color:white;margin-bottom:12px;">🌾 Transparansi</div>
+    <h1>Kenali Petani di Balik Produkmu 🌱</h1>
+    <p style="opacity:.85;margin-top:8px;font-size:1.05rem;">
+      Langsung dari kebun ke meja makanmu. Setiap buah punya cerita, dan kamu berhak mengenalnya.
+    </p>
+    <div style="display:flex;gap:24px;margin-top:32px;flex-wrap:wrap;">
+      <div style="background:rgba(255,255,255,.15);backdrop-filter:blur(8px);padding:16px 24px;border-radius:var(--radius);border:1px solid rgba(255,255,255,.2);">
+        <div style="font-size:1.8rem;font-weight:700;" id="heroFarmerCount">4</div>
+        <div style="font-size:.82rem;opacity:.8;">Petani Terverifikasi</div>
+      </div>
+      <div style="background:rgba(255,255,255,.15);backdrop-filter:blur(8px);padding:16px 24px;border-radius:var(--radius);border:1px solid rgba(255,255,255,.2);">
+        <div style="font-size:1.8rem;font-weight:700;">100%</div>
+        <div style="font-size:.82rem;opacity:.8;">Langsung dari Kebun</div>
+      </div>
+      <div style="background:rgba(255,255,255,.15);backdrop-filter:blur(8px);padding:16px 24px;border-radius:var(--radius);border:1px solid rgba(255,255,255,.2);">
+        <div style="font-size:1.8rem;font-weight:700;">Jawa Timur</div>
+        <div style="font-size:.82rem;opacity:.8;">Area Kebun Kami</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FARMERS LIST ═══ -->
+<section class="section">
+  <div class="container">
+    <div class="section-header fade-up" style="text-align:left;">
+      <div class="badge-pill">Daftar Petani</div>
+      <h2>Mitra Petani Dewy Bar</h2>
+      <p>Semua petani kami telah terverifikasi dan menerapkan praktik pertanian yang baik dan berkelanjutan.</p>
+    </div>
+
+    <div id="farmersGrid">
+      <div style="text-align:center;padding:60px;">
+        <div class="spinner" style="margin:0 auto;"></div>
+        <p style="margin-top:12px;color:var(--text-light);">Memuat data petani...</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FARMER DETAIL OVERLAY ═══ -->
+<div class="farmer-detail-overlay" id="farmerDetailOverlay" onclick="closeFarmerDetail(event)">
+  <div class="farmer-detail-panel" id="farmerDetailPanel">
+    <!-- Filled dynamically -->
+  </div>
+</div>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="container">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;">
+      <img src="../images/logo-full.png" alt="Dewy Bar" style="height:64px;width:auto;object-fit:contain;margin-bottom:16px;">
+      <p style="opacity:.7;font-size:.85rem;">© 2025 Dewy Bar · Mendukung petani lokal Indonesia</p>
+    </div>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+
+<script>
+  requireAuth();
+
+  const emojiMap = { apel:'🍎', mangga:'🥭', pisang:'🍌', pepaya:'🧡', semangka:'🍉', jeruk:'🍊', jus:'🥤', smoothie:'🥤', fruit:'🍱' };
+  function getEmoji(name) { return Object.entries(emojiMap).find(([k]) => name.toLowerCase().includes(k))?.[1] || '🍃'; }
+
+  const farmerEmojis = { 1:'👨‍🌾', 2:'👩‍🌾', 3:'🧑‍🌾', 4:'👩‍🌾' };
+
+  async function loadFarmers() {
+    try {
+      const farmers = await API.getFarmers();
+      document.getElementById('heroFarmerCount').textContent = farmers.length;
+      const grid = document.getElementById('farmersGrid');
+      grid.className = 'grid-3';
+      grid.innerHTML = farmers.map(f => `
+        <div class="farmer-card fade-up" onclick="openFarmer(${f.id})">
+          <div class="farmer-img-wrap">
+            <span style="font-size:5rem;">${farmerEmojis[f.id] || '👨‍🌾'}</span>
+            <div class="farmer-location">📍 ${f.location}</div>
+          </div>
+          <div class="farmer-info">
+            <h3>${f.name}</h3>
+            <p>${f.bio}</p>
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <span style="font-size:.8rem;color:var(--text-light);">
+                🌱 ${f.product_ids.length} produk
+              </span>
+              <button class="btn btn-primary btn-sm">Lihat Profil →</button>
+            </div>
+          </div>
+        </div>`).join('');
+      initFadeUps();
+    } catch (err) {
+      document.getElementById('farmersGrid').innerHTML =
+        `<p style="text-align:center;padding:40px;color:#e74c3c;">Gagal memuat: ${err.message}</p>`;
+    }
+  }
+
+  async function openFarmer(id) {
+    const overlay = document.getElementById('farmerDetailOverlay');
+    const panel   = document.getElementById('farmerDetailPanel');
+    panel.innerHTML = `<div style="padding:40px;text-align:center;"><div class="spinner" style="margin:0 auto;"></div></div>`;
+    overlay.classList.add('open');
+
+    try {
+      const f = await API.getFarmer(id);
+      panel.innerHTML = `
+        <div style="position:relative;">
+          <div class="farmer-detail-hero">
+            <div class="farmer-avatar-large">${farmerEmojis[f.id] || '👨‍🌾'}</div>
+            <div>
+              <div style="font-size:.8rem;opacity:.7;margin-bottom:6px;">Petani Terverifikasi ✅</div>
+              <h2 style="font-family:'Manrope',sans-serif;font-size:1.6rem;margin-bottom:6px;">${f.name}</h2>
+              <div style="opacity:.8;font-size:.9rem;">📍 ${f.location}</div>
+              <div style="opacity:.8;font-size:.85rem;margin-top:4px;">📞 ${f.phone}</div>
+            </div>
+            <button class="close-detail" onclick="closeFarmerDetail()">×</button>
+          </div>
+          <div class="farmer-detail-body">
+            <div class="stat-grid">
+              <div class="stat-card">
+                <div class="stat-val">${f.product_ids.length}</div>
+                <div class="stat-label">Produk Aktif</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-val">4.8⭐</div>
+                <div class="stat-label">Rating</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-val">2+ Thn</div>
+                <div class="stat-label">Bergabung</div>
+              </div>
+            </div>
+
+            <h4 style="font-family:'Manrope',sans-serif;font-weight:700;margin-bottom:10px;">Tentang Petani</h4>
+            <p style="color:var(--text-mid);font-size:.92rem;line-height:1.7;margin-bottom:24px;">${f.bio}</p>
+
+            <h4 style="font-family:'Manrope',sans-serif;font-weight:700;margin-bottom:12px;">📍 Lokasi Kebun</h4>
+            <div class="map-placeholder">
+              <div class="map-pin">📍</div>
+              <strong>${f.location}</strong>
+              <span style="font-size:.78rem;">Peta interaktif memerlukan koneksi Maps API</span>
+            </div>
+
+            <h4 style="font-family:'Manrope',sans-serif;font-weight:700;margin-bottom:16px;">🌱 Produk ${f.name}</h4>
+            <div class="product-mini-list">
+              ${f.products.map(p => {
+                const price = p.flash_sale ? p.sale_price : p.price;
+                return `
+                  <div class="product-mini" onclick="addToCartFromFarmer(${p.id})">
+                    <div class="product-mini-icon">${getEmoji(p.name)}</div>
+                    <div class="product-mini-info">
+                      <div class="name">${p.name}</div>
+                      <div class="price">${formatRp(price)}</div>
+                    </div>
+                    <button class="btn btn-primary btn-sm" style="flex-shrink:0;">+</button>
+                  </div>`;
+              }).join('')}
+            </div>
+
+            <div style="display:flex;gap:12px;margin-top:28px;">
+              <button class="btn btn-outline" style="flex:1;" onclick="closeFarmerDetail()">Tutup</button>
+              <a href="katalog.html" class="btn btn-primary" style="flex:1;">Lihat Semua Produk</a>
+            </div>
+          </div>
+        </div>`;
+    } catch (err) {
+      panel.innerHTML = `<div style="padding:40px;text-align:center;color:#e74c3c;">Gagal memuat: ${err.message}</div>`;
+    }
+  }
+
+  async function addToCartFromFarmer(pid) {
+    try {
+      await API.addToCart({ product_id: pid, qty: 1 });
+      showToast('✅','Ditambahkan!','Produk berhasil masuk keranjang');
+      updateCartBadge();
+    } catch (err) { showToast('❌','Gagal',err.message); }
+  }
+
+  function closeFarmerDetail(event) {
+    if (event && event.target !== document.getElementById('farmerDetailOverlay')) return;
+    document.getElementById('farmerDetailOverlay').classList.remove('open');
+  }
+
+  loadFarmers();
+</script>
+</body>
+</html>

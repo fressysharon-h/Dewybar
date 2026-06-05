@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dewy Bar 🌿 — Segar Langsung dari Petani</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <style>
+    /* extra home styles */
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px; }
+    .feature-item  { text-align: center; padding: 32px 20px; }
+    .feature-icon  { font-size: 3rem; margin-bottom: 16px; }
+    .feature-item h4 { font-family: 'Manrope', sans-serif; font-weight: 700; margin-bottom: 8px; }
+    .feature-item p  { font-size: .88rem; color: var(--text-mid); }
+    .cta-section {
+      background: linear-gradient(135deg, var(--green-deep), var(--green-mid));
+      color: var(--white); text-align: center; padding: 100px 24px;
+    }
+    .cta-section h2 { margin-bottom: 16px; }
+    .cta-section p  { opacity: .88; margin-bottom: 32px; font-size: 1.05rem; }
+    .cta-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+
+    /* ── BLACK NAVBAR OVERRIDE ── */
+    .navbar {
+      background: #000000 !important;
+      border-bottom: 1px solid rgba(255,255,255,.1) !important;
+    }
+    .navbar.scrolled { box-shadow: 0 4px 24px rgba(0,0,0,.5) !important; }
+
+    /* Logo area: icon + DEWY BAR + Healthy Buddy */
+    .navbar-logo-wrap {
+      display: flex; align-items: center; gap: 14px; text-decoration: none;
+    }
+    .navbar-logo-wrap img {
+      height: 52px; width: auto; object-fit: contain;
+    }
+    .navbar-logo-text {
+      display: flex; flex-direction: column; gap: 1px;
+    }
+    .navbar-logo-title {
+      font-family: 'Manrope', sans-serif;
+      font-size: 1.35rem; font-weight: 800;
+      color: #ffffff; letter-spacing: 2px;
+      line-height: 1.1; text-transform: uppercase;
+    }
+    .navbar-logo-sub {
+      font-family: 'Manrope', sans-serif;
+      font-size: 0.78rem; font-weight: 400;
+      color: #a0a0a0; letter-spacing: 1px;
+      line-height: 1;
+    }
+
+    /* White nav links */
+    .navbar .nav-links a {
+      color: #ffffff !important;
+    }
+    .navbar .nav-links a:hover { color: #49A760 !important; }
+    .navbar .nav-links a::after { background: #49A760 !important; }
+
+    /* Login button: white outline */
+    .navbar .btn-outline {
+      color: #ffffff !important;
+      border-color: #ffffff !important;
+    }
+    .navbar .btn-outline:hover {
+      background: #ffffff !important;
+      color: #000000 !important;
+    }
+
+    /* Hamburger white */
+    .navbar .hamburger span { background: #ffffff !important; }
+
+    /* Mobile nav dark */
+    .nav-mobile {
+      position: fixed; top: 72px; left: 0; right: 0;
+      background: #111111; padding: 24px; z-index: 999;
+      display: none; flex-direction: column; gap: 16px;
+      box-shadow: 0 8px 24px rgba(0,0,0,.5);
+    }
+    .nav-mobile.open { display: flex; }
+    .nav-mobile a { padding: 10px 0; font-weight: 600; color: #ffffff; border-bottom: 1px solid rgba(255,255,255,.1); }
+    .nav-mobile a:hover { color: #49A760; }
+  </style>
+  <!-- Firebase SDK -->
+  <!-- Firebase SDK -->
+  
+  
+  
+</head>
+<body>
+
+<!-- ═══ NAVBAR ═══ -->
+<nav class="navbar">
+  <div class="navbar-inner">
+    <a href="index.html" class="navbar-logo-wrap">
+      <img src="../images/logo-full.png" alt="Dewy Bar">
+      <div class="navbar-logo-text">
+        <span class="navbar-logo-title">DEWY BAR</span>
+        <span class="navbar-logo-sub">Healthy Buddy</span>
+      </div>
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#about">About Us</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="signup.html">Sign Up</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="login.html" class="btn btn-outline btn-sm">Login</a>
+      <a href="signup.html" class="btn btn-primary btn-sm">Daftar Gratis</a>
+    </div>
+    <button class="hamburger" id="ham" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<div class="nav-mobile" id="navMobile">
+  <a href="#about">About Us</a>
+  <a href="#faq">FAQ</a>
+  <a href="signup.html">Sign Up</a>
+  <a href="login.html">Login</a>
+</div>
+
+<!-- ═══ HERO SLIDER ═══ -->
+<section class="hero-slider" id="heroSlider">
+  <!-- Slide 1 -->
+  <div class="slide active" data-index="0">
+    <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=1600&auto=format&fit=crop');"></div>
+    <div class="slide-content container">
+      <div class="slide-label">🌿 #1 Platform Buah Segar Indonesia</div>
+      <h1>Segar Langsung dari Petani ke Kamu</h1>
+      <p>Nikmati buah segar berkualitas tanpa perantara, langsung dari kebun pilihan ke rumahmu.</p>
+      <div class="slide-btns">
+        <a href="signup.html" class="btn btn-gold btn-lg">Belanja Sekarang</a>
+        <a href="#about" class="btn btn-outline btn-lg" style="color:white;border-color:white;">Pelajari Lebih</a>
+      </div>
+    </div>
+  </div>
+  <!-- Slide 2 -->
+  <div class="slide" data-index="1">
+    <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1577234286642-fc512a5f8f11?w=1600&auto=format&fit=crop');"></div>
+    <div class="slide-content container">
+      <div class="slide-label">🍎 Solusi Buah Berkualitas</div>
+      <h1>Capek Dapat Buah Kurang Fresh?</h1>
+      <p>Dewy Bar hadir dengan produk segar, transparan, dan langsung dari sumbernya — dijamin kualitasnya.</p>
+      <div class="slide-btns">
+        <a href="signup.html" class="btn btn-gold btn-lg">Lihat Produk</a>
+      </div>
+    </div>
+  </div>
+  <!-- Slide 3 -->
+  <div class="slide" data-index="2">
+    <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=1600&auto=format&fit=crop');"></div>
+    <div class="slide-content container">
+      <div class="slide-label">🌱 Fitur Unggulan</div>
+      <h1>Atur Pesanan & Kenali Petaninya</h1>
+      <p>Pilih jadwal pengiriman dan lihat langsung siapa yang menanam buahmu. Transparan dari kebun ke meja.</p>
+      <div class="slide-btns">
+        <a href="signup.html" class="btn btn-gold btn-lg">Coba Smart PO</a>
+        <a href="#farmers" class="btn btn-outline btn-lg" style="color:white;border-color:white;">Jejak Petani</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Controls -->
+  <button class="slider-arrow prev" id="sliderPrev" aria-label="Sebelumnya">&#8592;</button>
+  <button class="slider-arrow next" id="sliderNext" aria-label="Berikutnya">&#8594;</button>
+  <div class="slider-controls">
+    <div class="dot active" data-dot="0"></div>
+    <div class="dot" data-dot="1"></div>
+    <div class="dot" data-dot="2"></div>
+  </div>
+</section>
+
+<!-- ═══ SELAMAT DATANG ═══ -->
+<section class="section" style="background: var(--green-deep); color: white; padding: 48px 0; text-align: center;">
+  <div class="container">
+    <h2>Selamat Datang di Dewy Bar 🌿</h2>
+    <p style="opacity:.85; margin-top:12px; font-size:1.1rem;">
+      Segar langsung dari petani ke kamu • Pilih buah terbaik, hidup lebih sehat
+    </p>
+  </div>
+</section>
+
+<!-- ═══ MANFAAT ═══ -->
+<section class="section" id="about">
+  <div class="container">
+    <div class="section-header fade-up">
+      <div class="badge-pill">Manfaat Dewy Bar</div>
+      <h2>Kenapa Pilih Dewy Bar?</h2>
+      <p>Kami menghubungkan kamu langsung dengan petani terpercaya untuk pengalaman belanja buah terbaik.</p>
+    </div>
+    <div class="benefits-grid">
+      <div class="benefit-card fade-up">
+        <div class="benefit-icon">🌱</div>
+        <h3>Langsung dari Petani</h3>
+        <p>Tanpa perantara. Kamu tahu persis siapa yang menanam buahmu dan dari mana asalnya.</p>
+      </div>
+      <div class="benefit-card fade-up">
+        <div class="benefit-icon">✅</div>
+        <h3>Kualitas Terjamin</h3>
+        <p>Setiap produk melewati seleksi ketat. Buah segar, rapi dikemas, tiba dalam kondisi prima.</p>
+      </div>
+      <div class="benefit-card fade-up">
+        <div class="benefit-icon">💚</div>
+        <h3>Hidup Lebih Sehat</h3>
+        <p>Pantau asupan nutrisi harianmu langsung dari profil. Buah segar = gaya hidup sehat.</p>
+      </div>
+      <div class="benefit-card fade-up">
+        <div class="benefit-icon">📅</div>
+        <h3>Pre-Order Fleksibel</h3>
+        <p>Atur jadwal pengiriman sesuai keinginanmu. Pesan lebih awal, lebih praktis dan hemat.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TEAM MEMBER ═══ -->
+<section class="section" style="background: var(--cream-dark);">
+  <div class="container">
+    <div class="section-header fade-up">
+      <div class="badge-pill">Tim Kami</div>
+      <h2>Team Member</h2>
+      <p>Kenalan dengan para builder di balik Dewy Bar yang berdedikasi untuk menghadirkan pengalaman terbaik.</p>
+    </div>
+    <div class="team-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:32px;">
+      <div class="team-card fade-up" style="background:var(--white);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm);text-align:center;transition:var(--transition);" onmouseover="this.style.transform='translateY(-8px)';this.style.boxShadow='0 16px 48px rgba(73,167,96,.18)'" onmouseout="this.style.transform='';this.style.boxShadow='var(--shadow-sm)'">
+        <div style="height:220px;overflow:hidden;">
+          <img src="../images/ayu.png" alt="I Dewa Ayu" style="width:100%;height:100%;object-fit:cover;object-position:center top;">
+        </div>
+        <div style="padding:20px;">
+          <h4 style="font-weight:700;font-size:1rem;color:var(--text-dark);margin-bottom:6px;">I Dewa Ayu</h4>
+          <span style="display:inline-block;background:var(--green-pale);color:var(--green-mid);padding:4px 14px;border-radius:50px;font-size:.8rem;font-weight:600;">Builder</span>
+        </div>
+      </div>
+      <div class="team-card fade-up" style="background:var(--white);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm);text-align:center;transition:var(--transition);" onmouseover="this.style.transform='translateY(-8px)';this.style.boxShadow='0 16px 48px rgba(73,167,96,.18)'" onmouseout="this.style.transform='';this.style.boxShadow='var(--shadow-sm)'">
+        <div style="height:220px;overflow:hidden;">
+          <img src="../images/fressy.png" alt="Fressy Sharon" style="width:100%;height:100%;object-fit:cover;object-position:center top;">
+        </div>
+        <div style="padding:20px;">
+          <h4 style="font-weight:700;font-size:1rem;color:var(--text-dark);margin-bottom:6px;">Fressy Sharon</h4>
+          <span style="display:inline-block;background:var(--green-pale);color:var(--green-mid);padding:4px 14px;border-radius:50px;font-size:.8rem;font-weight:600;">Builder</span>
+        </div>
+      </div>
+      <div class="team-card fade-up" style="background:var(--white);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm);text-align:center;transition:var(--transition);" onmouseover="this.style.transform='translateY(-8px)';this.style.boxShadow='0 16px 48px rgba(73,167,96,.18)'" onmouseout="this.style.transform='';this.style.boxShadow='var(--shadow-sm)'">
+        <div style="height:220px;overflow:hidden;">
+          <img src="../images/faiza.png" alt="Faiza Yeira" style="width:100%;height:100%;object-fit:cover;object-position:center top;">
+        </div>
+        <div style="padding:20px;">
+          <h4 style="font-weight:700;font-size:1rem;color:var(--text-dark);margin-bottom:6px;">Faiza Yeira</h4>
+          <span style="display:inline-block;background:var(--green-pale);color:var(--green-mid);padding:4px 14px;border-radius:50px;font-size:.8rem;font-weight:600;">Builder</span>
+        </div>
+      </div>
+      <div class="team-card fade-up" style="background:var(--white);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm);text-align:center;transition:var(--transition);" onmouseover="this.style.transform='translateY(-8px)';this.style.boxShadow='0 16px 48px rgba(73,167,96,.18)'" onmouseout="this.style.transform='';this.style.boxShadow='var(--shadow-sm)'">
+        <div style="height:220px;overflow:hidden;">
+          <img src="../images/fithra.png" alt="Fithra Musyaffa" style="width:100%;height:100%;object-fit:cover;object-position:center top;">
+        </div>
+        <div style="padding:20px;">
+          <h4 style="font-weight:700;font-size:1rem;color:var(--text-dark);margin-bottom:6px;">Fithra Musyaffa</h4>
+          <span style="display:inline-block;background:var(--green-pale);color:var(--green-mid);padding:4px 14px;border-radius:50px;font-size:.8rem;font-weight:600;">Builder</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TESTIMONI ═══ -->
+<section class="section">
+  <div class="container">
+    <div class="section-header fade-up">
+      <div class="badge-pill">Testimoni</div>
+      <h2>Kata Mereka yang Sudah Bergabung</h2>
+    </div>
+    <div class="testimonials-grid">
+      <div class="testimonial-card fade-up">
+        <p>"Apel dari Pak Budi beneran segar banget! Beda jauh dari yang di supermarket. Fitur Jejak Petani bikin aku makin percaya sama kualitasnya."</p>
+        <div class="reviewer">
+          <div class="reviewer-avatar">A</div>
+          <div>
+            <div class="reviewer-name">Anisa R.</div>
+            <div class="reviewer-detail">⭐⭐⭐⭐⭐ · Malang</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card fade-up">
+        <p>"Smart PO ini game changer. Aku tinggal pilih tanggal, buah diantar tepat waktu. Ga perlu repot ke pasar lagi tiap pagi!"</p>
+        <div class="reviewer">
+          <div class="reviewer-avatar">D</div>
+          <div>
+            <div class="reviewer-name">Dika P.</div>
+            <div class="reviewer-detail">⭐⭐⭐⭐⭐ · Surabaya</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card fade-up">
+        <p>"Smoothie Mixed Fruit-nya juara! Fresh banget, ga ada pengawetnya. Harga juga worth it untuk kualitas sebagus ini."</p>
+        <div class="reviewer">
+          <div class="reviewer-avatar">S</div>
+          <div>
+            <div class="reviewer-name">Sinta M.</div>
+            <div class="reviewer-detail">⭐⭐⭐⭐⭐ · Batu</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CTA ═══ -->
+<section class="cta-section">
+  <div class="container">
+    <h2>Siap Hidup Lebih Segar? 🌿</h2>
+    <p>Bergabung dengan ribuan pengguna yang sudah menikmati buah segar langsung dari petani.</p>
+    <div class="cta-btns">
+      <a href="signup.html" class="btn btn-gold btn-lg">Mulai Sekarang</a>
+      <a href="katalog.html" class="btn btn-outline btn-lg" style="color:white;border-color:rgba(255,255,255,.5);">Jelajahi Produk</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FAQ ═══ -->
+<section class="section" id="faq" style="background: var(--cream-dark);">
+  <div class="container" style="max-width: 720px;">
+    <div class="section-header fade-up">
+      <div class="badge-pill">FAQ</div>
+      <h2>Pertanyaan yang Sering Ditanyakan</h2>
+    </div>
+    <div id="faqList"></div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <img src="../images/logo-full.png" alt="Dewy Bar" style="height:64px;width:auto;object-fit:contain;margin-bottom:16px;">
+        <p class="footer-desc">Platform buah segar langsung dari petani ke konsumen. Nikmati kesegaran alami setiap hari.</p>
+        <p style="margin-top:12px; font-size:.85rem; font-style:italic; opacity:.7;">"Ikuti kami untuk info segar lainnya 🌿"</p>
+      </div>
+      <div class="footer-col">
+        <h4>Navigasi</h4>
+        <ul>
+          <li><a href="#about">About Us</a></li>
+          <li><a href="#faq">FAQ</a></li>
+          <li><a href="signup.html">Daftar</a></li>
+          <li><a href="login.html">Login</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Produk</h4>
+        <ul>
+          <li><a href="katalog.html">Katalog</a></li>
+          <li><a href="smartpo.html">Smart PO</a></li>
+          <li><a href="jejak-petani.html">Jejak Petani</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Kontak</h4>
+        <ul>
+          <li><a href="#">📍 Jl. Bendungan Batu Jahe, Malang</a></li>
+          <li><a href="#">📞 (0341)123-4567</a></li>
+          <li><a href="#">✉️ dewybar@gmail.com.id</a></li>
+        </ul>
+        <p style="margin-top:16px; font-size:.82rem; font-style:italic; opacity:.7;">"Hubungi kami kapan saja!"</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Dewy Bar. Dibuat dengan 💚 untuk Indonesia yang lebih sehat.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+<script>
+  // ── Slider ─────────────────────────────────────────────────
+  let current = 0;
+  const slides = document.querySelectorAll('.slide');
+  const dots   = document.querySelectorAll('.dot');
+
+  function goSlide(n) {
+    slides[current].classList.remove('active');
+    dots[current].classList.remove('active');
+    current = (n + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    dots[current].classList.add('active');
+  }
+
+  document.getElementById('sliderPrev').onclick = () => goSlide(current - 1);
+  document.getElementById('sliderNext').onclick = () => goSlide(current + 1);
+  dots.forEach(d => d.addEventListener('click', () => goSlide(+d.dataset.dot)));
+
+  const autoSlide = setInterval(() => goSlide(current + 1), 5000);
+
+  // ── Mobile nav ─────────────────────────────────────────────
+  document.getElementById('ham').onclick = () => {
+    document.getElementById('navMobile').classList.toggle('open');
+  };
+
+  // ── FAQ ────────────────────────────────────────────────────
+  const faqs = [
+    { q: 'Berapa lama pengiriman?',        a: 'Umumnya 1–2 hari kerja. Dengan Smart PO kamu bisa atur jadwal sesuai keinginan.' },
+    { q: 'Apakah produk 100% organik?',    a: 'Sebagian besar petani kami menggunakan metode organik. Lihat detail produk untuk info lengkap.' },
+    { q: 'Bagaimana cara pembayaran?',     a: 'Saat ini mendukung QRIS yang bisa digunakan di semua aplikasi e-wallet dan mobile banking.' },
+    { q: 'Bisa retur produk jika tidak segar?', a: 'Bisa! Hubungi kami dalam 24 jam setelah produk diterima dan kami akan proses penggantian.' },
+    { q: 'Apa itu Smart Pre-Order?',       a: 'Fitur untuk memesan buah di muka dengan memilih tanggal & lokasi pengiriman. Kamu juga bisa lihat siapa saja yang order di lokasi sama.' },
+  ];
+
+  const faqList = document.getElementById('faqList');
+  faqs.forEach((f, i) => {
+    faqList.innerHTML += `
+      <div style="background:var(--white);border-radius:var(--radius-sm);margin-bottom:12px;overflow:hidden;box-shadow:var(--shadow-sm);">
+        <button onclick="toggleFaq(${i})" id="faqBtn${i}" style="width:100%;padding:18px 20px;text-align:left;font-weight:600;font-size:.95rem;display:flex;justify-content:space-between;align-items:center;color:var(--text-dark);">
+          ${f.q} <span id="faqArrow${i}" style="transition:.3s;">▼</span>
+        </button>
+        <div id="faqBody${i}" style="max-height:0;overflow:hidden;transition:.3s;padding:0 20px;">
+          <p style="padding-bottom:16px;color:var(--text-mid);font-size:.9rem;">${f.a}</p>
+        </div>
+      </div>`;
+  });
+
+  function toggleFaq(i) {
+    const body  = document.getElementById('faqBody' + i);
+    const arrow = document.getElementById('faqArrow' + i);
+    const open  = body.style.maxHeight !== '0px' && body.style.maxHeight !== '';
+    body.style.maxHeight  = open ? '0' : '200px';
+    arrow.style.transform = open ? '' : 'rotate(180deg)';
+  }
+
+  // Redirect if already logged in
+  redirectIfLoggedIn();
+</script>
+</body>
+</html>

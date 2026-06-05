@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pembayaran — Dewy Bar 🌿</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    .page-hero {
+      background: linear-gradient(135deg, var(--green-deep), var(--green-mid));
+      padding: 110px 0 48px; color: var(--white);
+    }
+    .payment-wrapper { max-width: 560px; margin: 0 auto; }
+    .qris-box {
+      border: 3px dashed var(--green-light); border-radius: var(--radius);
+      background: var(--green-pale); padding: 32px; text-align: center; margin: 24px 0;
+    }
+    .qris-grid {
+      display: grid; grid-template-columns: repeat(5,1fr); gap: 3px;
+      width: 180px; margin: 0 auto 16px;
+    }
+    .qr-cell { aspect-ratio: 1; background: var(--green-deep); border-radius: 2px; }
+    .qr-cell.white { background: var(--white); }
+    .qr-cell.light { background: var(--green-light); opacity: .4; }
+    .timer-circle {
+      width: 80px; height: 80px; border-radius: 50%;
+      border: 4px solid var(--green-light);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      margin: 0 auto; font-weight: 700;
+    }
+    .timer-val { font-size: 1.4rem; color: var(--green-deep); line-height: 1; }
+    .timer-lbl { font-size: .65rem; color: var(--text-light); }
+    .method-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+    .method-tab {
+      padding: 10px 18px; border-radius: var(--radius-sm);
+      border: 2px solid var(--cream-dark); font-weight: 600; font-size: .85rem;
+      color: var(--text-mid); cursor: pointer; transition: var(--transition); background: var(--white);
+    }
+    .method-tab.active { border-color: var(--green-mid); color: var(--green-mid); background: var(--green-pale); }
+    .success-screen {
+      text-align: center; padding: 40px 20px;
+    }
+    .success-anim { font-size: 5rem; animation: bounce .6s ease; }
+    @keyframes bounce {
+      0%   { transform: scale(0); }
+      70%  { transform: scale(1.15); }
+      100% { transform: scale(1); }
+    }
+    .progress-steps {
+      display: flex; align-items: center;
+      padding: 36px 24px 0;
+    }
+    .progress-step { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; }
+    .step-circle { width: 36px; height: 36px; border-radius: 50%; background: var(--cream-dark); color: var(--text-light); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: .85rem; }
+    .step-circle.done   { background: var(--green-light); color: var(--white); }
+    .step-circle.active { background: var(--green-mid);   color: var(--white); }
+    .step-line  { flex: 1; height: 2px; background: var(--cream-dark); margin-bottom: 22px; }
+    .step-line.done { background: var(--green-light); }
+    .step-label { font-size: .75rem; color: var(--text-light); }
+  </style>
+  <!-- Firebase SDK -->
+  <!-- Firebase SDK -->
+  
+  
+  
+</head>
+<body>
+
+<!-- ═══ NAVBAR ═══ -->
+<nav class="navbar">
+  <div class="navbar-inner">
+    <a href="home-loggedin.html" class="navbar-logo-wrap">
+      <img src="../images/logo-full.png" alt="Dewy Bar" style="height:48px;width:auto;object-fit:contain;">
+      <div class="navbar-logo-text">
+        <span class="navbar-logo-title">DEWY BAR</span>
+        <span class="navbar-logo-sub">Healthy Buddy</span>
+      </div>
+    </a>
+    <div class="nav-actions">
+      <a href="profile.html" class="btn btn-outline btn-sm">👤 Profil</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══ PAGE HERO ═══ -->
+<section class="page-hero">
+  <div class="container">
+    <div class="badge-pill" style="background:rgba(255,255,255,.2);color:white;margin-bottom:12px;">💳 Pembayaran</div>
+    <h1>Selesaikan Pembayaranmu</h1>
+    <p style="opacity:.8;margin-top:8px;">Pesananmu akan segera diproses setelah pembayaran berhasil</p>
+  </div>
+</section>
+
+<!-- ═══ PROGRESS STEPS ═══ -->
+<section style="padding: 36px 0 0; background: var(--white);">
+  <div class="container" style="max-width:700px;">
+    <div class="progress-steps">
+      <div class="progress-step">
+        <div class="step-circle done">✓</div>
+        <span class="step-label">Keranjang</span>
+      </div>
+      <div class="step-line done"></div>
+      <div class="progress-step">
+        <div class="step-circle done">✓</div>
+        <span class="step-label">Checkout</span>
+      </div>
+      <div class="step-line done"></div>
+      <div class="progress-step">
+        <div class="step-circle active">3</div>
+        <span class="step-label">Pembayaran</span>
+      </div>
+      <div class="step-line"></div>
+      <div class="progress-step">
+        <div class="step-circle">4</div>
+        <span class="step-label">Selesai</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PAYMENT CONTENT ═══ -->
+<section class="section">
+  <div class="container">
+    <div class="payment-wrapper">
+
+      <!-- Payment screen -->
+      <div id="paymentScreen">
+
+        <!-- Order summary card -->
+        <div class="payment-card" style="margin-bottom:20px;">
+          <h3 style="font-family:'Manrope',sans-serif;font-weight:700;margin-bottom:16px;">📋 Ringkasan Pesanan</h3>
+          <div class="summary-row">
+            <span>Nomor Pesanan</span>
+            <span style="font-weight:700;color:var(--green-deep);" id="orderIdDisplay">#—</span>
+          </div>
+          <div class="summary-row total">
+            <span>Total Pembayaran</span>
+            <span id="orderTotalDisplay">Rp 0</span>
+          </div>
+        </div>
+
+        <!-- Payment method tabs -->
+        <div class="payment-card">
+          <h3 style="font-family:'Manrope',sans-serif;font-weight:700;margin-bottom:16px;">💳 Metode Pembayaran</h3>
+
+          <div class="method-tabs">
+            <button class="method-tab active" onclick="selectMethod('qris')">📱 QRIS</button>
+            <button class="method-tab" onclick="selectMethod('transfer')">🏦 Transfer Bank</button>
+          </div>
+
+          <!-- QRIS -->
+          <div id="methodQris">
+            <p style="font-size:.88rem;color:var(--text-mid);margin-bottom:16px;">
+              Scan QR Code di bawah menggunakan aplikasi <strong>GoPay, OVO, Dana, ShopeePay</strong>, atau mobile banking manapun yang mendukung QRIS.
+            </p>
+
+            <div class="qris-box">
+              <!-- QR Code QRIS resmi -->
+              <img src="../images/qris-code.png" alt="QR Code QRIS Dewy Bar"
+                   style="width:200px;height:200px;object-fit:contain;display:block;margin:0 auto 16px;border-radius:8px;" />
+              <div style="margin-bottom:16px;">
+                <div style="font-size:.75rem;color:var(--text-light);margin-bottom:4px;">Berlaku selama</div>
+                <div class="timer-circle">
+                  <div class="timer-val" id="timerVal">15:00</div>
+                  <div class="timer-lbl">menit</div>
+                </div>
+              </div>
+              <p style="font-size:.8rem;color:var(--text-mid);">Kode QR akan kedaluwarsa jika tidak digunakan</p>
+            </div>
+
+            <div style="background:var(--cream-dark);border-radius:var(--radius-sm);padding:16px;font-size:.85rem;color:var(--text-mid);margin-bottom:20px;">
+              <strong style="display:block;margin-bottom:8px;">Cara Bayar QRIS:</strong>
+              <ol style="list-style:decimal;padding-left:18px;line-height:2;">
+                <li>Buka aplikasi e-wallet / m-banking kamu</li>
+                <li>Pilih menu "Bayar" atau "Scan QR"</li>
+                <li>Scan kode QR di atas</li>
+                <li>Periksa jumlah, lalu konfirmasi pembayaran</li>
+                <li>Klik tombol "Konfirmasi Pembayaran" di bawah</li>
+              </ol>
+            </div>
+          </div>
+
+          <!-- Transfer Bank -->
+          <div id="methodTransfer" class="hidden">
+            <div style="background:var(--cream-dark);border-radius:var(--radius-sm);padding:20px;margin-bottom:16px;">
+              <div style="font-size:.85rem;color:var(--text-mid);margin-bottom:12px;">Transfer ke:</div>
+              <div style="font-size:1.1rem;font-weight:700;color:var(--green-deep);">BCA · 1234567890</div>
+              <div style="font-size:.9rem;color:var(--text-mid);margin-top:4px;">a.n. PT Dewy Bar Indonesia</div>
+              <div style="margin-top:16px;padding-top:16px;border-top:1px solid rgba(0,0,0,.08);">
+                <div style="font-size:.8rem;color:var(--text-light);">Nominal Transfer</div>
+                <div style="font-size:1.3rem;font-weight:700;color:var(--green-deep);" id="transferAmount">Rp 0</div>
+                <div style="font-size:.75rem;color:#e74c3c;">*Transfer nominal tepat (termasuk kode unik)</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- (E-Wallet dihapus) -->
+
+          <button class="btn btn-primary btn-full btn-lg" onclick="confirmPayment()" id="confirmBtn">
+            ✅ Konfirmasi Pembayaran
+          </button>
+          <p style="text-align:center;font-size:.8rem;color:var(--text-light);margin-top:10px;">
+            Klik setelah melakukan pembayaran
+          </p>
+        </div>
+
+      </div>
+
+      <!-- Success screen -->
+      <div id="successScreen" class="hidden">
+        <div class="payment-card">
+          <div class="success-screen">
+            <div class="success-anim">✅</div>
+            <h2 style="margin:20px 0 8px;font-family:'Manrope',sans-serif;">Pembayaran Berhasil! 🎉</h2>
+            <p style="color:var(--text-mid);margin-bottom:8px;">Pesananmu sedang diproses oleh tim kami.</p>
+            <p style="color:var(--text-mid);font-size:.9rem;margin-bottom:28px;">
+              Estimasi pengiriman sesuai tanggal yang kamu pilih.
+            </p>
+            <div style="background:var(--green-pale);border-radius:var(--radius-sm);padding:20px;margin-bottom:28px;text-align:left;">
+              <div class="summary-row" style="padding:6px 0;">
+                <span style="color:var(--text-mid);font-size:.88rem;">Nomor Pesanan</span>
+                <span style="font-weight:700;color:var(--green-deep);" id="successOrderId">#—</span>
+              </div>
+              <div class="summary-row" style="padding:6px 0;border:none;">
+                <span style="color:var(--text-mid);font-size:.88rem;">Total Dibayar</span>
+                <span style="font-weight:700;color:var(--green-deep);" id="successTotal">Rp 0</span>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:12px;">
+              <a href="profile.html" class="btn btn-primary btn-full">Lihat Riwayat Pesanan</a>
+              <a href="katalog.html" class="btn btn-outline btn-full">Lanjut Belanja</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<script src="app.js"></script>
+
+<script>
+  requireAuth();
+
+  const orderId = localStorage.getItem('dewybar_order_id');
+  const total   = parseFloat(localStorage.getItem('dewybar_order_total') || '0');
+
+  document.getElementById('orderIdDisplay').textContent   = '#' + (orderId || '—');
+  document.getElementById('orderTotalDisplay').textContent = formatRp(total);
+  document.getElementById('transferAmount').textContent    = formatRp(total + 123); // unique code
+
+  // QR Code now uses real image (no JS generation needed)
+
+  // ── Timer countdown ──────────────────────────────────────
+  let seconds = 15 * 60;
+  const timerEl = document.getElementById('timerVal');
+  const timerInterval = setInterval(() => {
+    seconds--;
+    if (seconds <= 0) { clearInterval(timerInterval); timerEl.textContent = '00:00'; return; }
+    const m = String(Math.floor(seconds / 60)).padStart(2, '0');
+    const s = String(seconds % 60).padStart(2, '0');
+    timerEl.textContent = `${m}:${s}`;
+    if (seconds < 60) timerEl.style.color = '#e74c3c';
+  }, 1000);
+
+  // ── Method tabs ──────────────────────────────────────────
+  function selectMethod(m) {
+    document.querySelectorAll('.method-tab').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+    ['qris','transfer'].forEach(id => {
+      const el = document.getElementById('method' + id.charAt(0).toUpperCase() + id.slice(1));
+      if (el) el.classList.toggle('hidden', id !== m);
+    });
+  }
+
+  // ── Confirm payment ──────────────────────────────────────
+  async function confirmPayment() {
+    if (!orderId) {
+      showToast('⚠️','Tidak Ada Pesanan','Silakan lakukan checkout terlebih dahulu');
+      return;
+    }
+    const btn = document.getElementById('confirmBtn');
+    btn.textContent = 'Memverifikasi...';
+    btn.disabled    = true;
+
+    try {
+      await API.confirmPayment(orderId);
+      clearInterval(timerInterval);
+      document.getElementById('paymentScreen').classList.add('hidden');
+      document.getElementById('successScreen').classList.remove('hidden');
+      document.getElementById('successOrderId').textContent = '#' + orderId;
+      document.getElementById('successTotal').textContent   = formatRp(total);
+      localStorage.removeItem('dewybar_order_id');
+      localStorage.removeItem('dewybar_order_total');
+      localStorage.removeItem('dewybar_checkout_total');
+    } catch (err) {
+      showToast('❌','Gagal',err.message);
+      btn.textContent = '✅ Konfirmasi Pembayaran';
+      btn.disabled    = false;
+    }
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checkout — Dewy Bar 🌿</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    .page-hero {
+      background: linear-gradient(135deg, var(--green-deep), var(--green-mid));
+      padding: 110px 0 48px; color: var(--white);
+    }
+    .checkout-layout {
+      display: grid; grid-template-columns: 1fr 380px; gap: 32px; align-items: start;
+    }
+    .checkout-card {
+      background: var(--white); border-radius: var(--radius);
+      padding: 32px; box-shadow: var(--shadow-sm); margin-bottom: 20px;
+    }
+    .checkout-card h3 {
+      font-family: 'Manrope', sans-serif; font-weight: 700;
+      margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
+    }
+    .step-badge {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--green-mid); color: var(--white);
+      font-size: .8rem; font-weight: 700;
+      display: inline-flex; align-items: center; justify-content: center;
+    }
+    .checkout-item {
+      display: flex; align-items: center; gap: 14px;
+      padding: 14px 0; border-bottom: 1px solid var(--cream-dark);
+    }
+    .checkout-item:last-child { border: none; }
+    .checkout-item-img {
+      width: 52px; height: 52px; border-radius: var(--radius-sm);
+      background: var(--green-pale); display: flex; align-items: center;
+      justify-content: center; font-size: 1.6rem; flex-shrink: 0;
+    }
+    .progress-steps {
+      display: flex; align-items: center; gap: 0;
+      margin-bottom: 40px; padding: 0 24px;
+    }
+    .progress-step {
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+      flex: 1;
+    }
+    .step-circle {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--cream-dark); color: var(--text-light);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: .85rem; position: relative; z-index: 1;
+    }
+    .step-circle.active { background: var(--green-mid); color: var(--white); }
+    .step-circle.done   { background: var(--green-light); color: var(--white); }
+    .step-line {
+      flex: 1; height: 2px; background: var(--cream-dark); margin: 0 -2px; margin-bottom: 22px;
+    }
+    .step-line.done { background: var(--green-light); }
+    .step-label { font-size: .75rem; color: var(--text-light); font-weight: 500; text-align: center; }
+  </style>
+  <!-- Firebase SDK -->
+  <!-- Firebase SDK -->
+  
+  
+  
+</head>
+<body>
+
+<!-- ═══ NAVBAR ═══ -->
+<nav class="navbar">
+  <div class="navbar-inner">
+    <a href="home-loggedin.html" class="navbar-logo-wrap">
+      <img src="../images/logo-full.png" alt="Dewy Bar" style="height:48px;width:auto;object-fit:contain;">
+      <div class="navbar-logo-text">
+        <span class="navbar-logo-title">DEWY BAR</span>
+        <span class="navbar-logo-sub">Healthy Buddy</span>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="katalog.html">Katalog</a></li>
+      <li><a href="smartpo.html">Smart PO</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="keranjang.html" class="nav-cart">🛒 <span class="cart-badge">0</span></a>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══ PAGE HERO ═══ -->
+<section class="page-hero">
+  <div class="container">
+    <div class="badge-pill" style="background:rgba(255,255,255,.2);color:white;margin-bottom:12px;">📦 Pemesanan</div>
+    <h1>Hampir Selesai! 🎉</h1>
+    <p style="opacity:.8;margin-top:8px;">Periksa pesananmu sebelum pembayaran</p>
+  </div>
+</section>
+
+<!-- ═══ PROGRESS STEPS ═══ -->
+<section style="padding: 36px 0 0; background: var(--white);">
+  <div class="container" style="max-width: 700px;">
+    <div class="progress-steps">
+      <div class="progress-step">
+        <div class="step-circle done">✓</div>
+        <span class="step-label">Keranjang</span>
+      </div>
+      <div class="step-line done"></div>
+      <div class="progress-step">
+        <div class="step-circle active">2</div>
+        <span class="step-label">Checkout</span>
+      </div>
+      <div class="step-line"></div>
+      <div class="progress-step">
+        <div class="step-circle">3</div>
+        <span class="step-label">Pembayaran</span>
+      </div>
+      <div class="step-line"></div>
+      <div class="progress-step">
+        <div class="step-circle">4</div>
+        <span class="step-label">Selesai</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CHECKOUT CONTENT ═══ -->
+<section class="section">
+  <div class="container">
+
+    <div id="loadingState" style="text-align:center;padding:60px;">
+      <div class="spinner" style="margin:0 auto;"></div>
+      <p style="margin-top:12px;color:var(--text-light);">Memuat data pesanan...</p>
+    </div>
+
+    <div id="checkoutContent" class="checkout-layout hidden">
+      <!-- Left column -->
+      <div>
+
+        <!-- Delivery address -->
+        <div class="checkout-card">
+          <h3><span class="step-badge">1</span> Alamat Pengiriman</h3>
+          <div class="form-group" style="margin-bottom:12px;">
+            <label for="recipientName">Nama Penerima</label>
+            <input type="text" id="recipientName" class="form-control" placeholder="Nama penerima" />
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label for="deliveryAddress">Alamat Lengkap</label>
+            <input type="text" id="deliveryAddress" class="form-control" placeholder="Jl. Segar No.1, Kota, Provinsi" />
+          </div>
+        </div>
+
+        <!-- Delivery date -->
+        <div class="checkout-card">
+          <h3><span class="step-badge">2</span> Jadwal Pengiriman</h3>
+          <div class="form-group" style="margin-bottom:0;">
+            <label for="deliveryDate">Pilih Tanggal Pengiriman</label>
+            <input type="date" id="deliveryDate" class="form-control" />
+          </div>
+          <p style="font-size:.82rem;color:var(--text-light);margin-top:8px;">
+            💡 Pengiriman tersedia Senin–Sabtu. Gunakan Smart PO untuk jadwal lebih fleksibel.
+          </p>
+        </div>
+
+        <!-- Order items -->
+        <div class="checkout-card">
+          <h3><span class="step-badge">3</span> Produk Dipesan</h3>
+          <div id="checkoutItems"></div>
+        </div>
+
+      </div>
+
+      <!-- Right: summary -->
+      <div class="order-summary" style="position:sticky;top:100px;">
+        <h3>Ringkasan Pesanan</h3>
+        <div class="summary-row">
+          <span id="coItemCount">0 produk</span>
+          <span id="coSubtotal">Rp 0</span>
+        </div>
+        <div class="summary-row">
+          <span>Ongkos Kirim</span>
+          <span style="color:var(--green-mid);font-weight:600;">Gratis 🎉</span>
+        </div>
+        <div class="summary-row" id="coDiscountRow" style="display:none;">
+          <span style="color:var(--green-mid);">Diskon</span>
+          <span style="color:var(--green-mid);" id="coDiscountVal">- Rp 0</span>
+        </div>
+        <div class="summary-row total" style="margin-top:12px;padding-top:16px;border-top:2px solid var(--cream-dark);">
+          <span>Total Bayar</span>
+          <span id="coTotal">Rp 0</span>
+        </div>
+
+        <button class="btn btn-primary btn-full btn-lg" style="margin-top:20px;" onclick="placeOrder()">
+          Lanjut ke Pembayaran →
+        </button>
+        <p style="text-align:center;font-size:.8rem;color:var(--text-light);margin-top:12px;">
+          🔒 Data kamu aman bersama Dewy Bar
+        </p>
+
+        <div style="border-top:1px solid var(--cream-dark);margin-top:20px;padding-top:16px;">
+          <a href="keranjang.html" style="display:flex;align-items:center;gap:8px;justify-content:center;font-size:.88rem;color:var(--text-mid);">
+            ← Kembali ke Keranjang
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<script src="app.js"></script>
+
+<script>
+  requireAuth();
+
+  const emojiMap = { apel:'🍎', mangga:'🥭', pisang:'🍌', pepaya:'🧡', semangka:'🍉', jeruk:'🍊', jus:'🥤', smoothie:'🥤', fruit:'🍱' };
+  function getEmoji(name) {
+    return Object.entries(emojiMap).find(([k]) => name.toLowerCase().includes(k))?.[1] || '🍃';
+  }
+
+  // Set min delivery date = tomorrow
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  document.getElementById('deliveryDate').min   = tomorrow.toISOString().split('T')[0];
+  document.getElementById('deliveryDate').value = tomorrow.toISOString().split('T')[0];
+
+  // Pre-fill user data
+  const user = Auth.getUser();
+  if (user) {
+    document.getElementById('recipientName').value    = user.name;
+    document.getElementById('deliveryAddress').value  = user.address;
+  }
+
+  const discount = parseFloat(localStorage.getItem('dewybar_checkout_discount') || '0');
+
+  async function loadCheckout() {
+    try {
+      const cart = await API.getCart();
+      document.getElementById('loadingState').classList.add('hidden');
+
+      if (!cart.items || !cart.items.length) {
+        window.location.href = 'keranjang.html';
+        return;
+      }
+
+      document.getElementById('checkoutContent').classList.remove('hidden');
+
+      document.getElementById('checkoutItems').innerHTML = cart.items.map(item => {
+        const price = item.flash_sale ? item.sale_price : item.price;
+        return `
+          <div class="checkout-item">
+            <div class="checkout-item-img">${getEmoji(item.name)}</div>
+            <div style="flex:1;">
+              <div style="font-weight:700;margin-bottom:2px;">${item.name}</div>
+              <div style="font-size:.82rem;color:var(--text-light);">
+                ${item.weight}g · Qty: ${item.qty}
+              </div>
+            </div>
+            <div style="font-weight:700;color:var(--green-deep);">${formatRp(price * item.qty)}</div>
+          </div>`;
+      }).join('');
+
+      const total = Math.max(0, cart.total - discount);
+      document.getElementById('coItemCount').textContent = `${cart.items.length} produk`;
+      document.getElementById('coSubtotal').textContent  = formatRp(cart.total);
+      document.getElementById('coTotal').textContent     = formatRp(total);
+
+      if (discount > 0) {
+        document.getElementById('coDiscountRow').style.display = 'flex';
+        document.getElementById('coDiscountVal').textContent   = '- ' + formatRp(discount);
+      }
+
+      localStorage.setItem('dewybar_checkout_total', total);
+
+    } catch (err) {
+      document.getElementById('loadingState').innerHTML =
+        `<p style="color:#e74c3c;text-align:center;">Gagal memuat: ${err.message}</p>`;
+    }
+  }
+
+  async function placeOrder() {
+    const address  = document.getElementById('deliveryAddress').value.trim();
+    const date     = document.getElementById('deliveryDate').value;
+    if (!address)  { showToast('⚠️','Lengkapi Data','Alamat pengiriman wajib diisi'); return; }
+    if (!date)     { showToast('⚠️','Lengkapi Data','Tanggal pengiriman wajib dipilih'); return; }
+
+    const btn = document.querySelector('#checkoutContent button.btn-primary');
+    btn.textContent = 'Memproses...';
+    btn.disabled    = true;
+
+    try {
+      const res = await API.createOrder({
+        address,
+        delivery_date:  date,
+        payment_method: 'QRIS',
+        discount:       discount,
+      });
+      localStorage.setItem('dewybar_order_id', res.order_id);
+      localStorage.setItem('dewybar_order_total', res.total);
+      localStorage.removeItem('dewybar_checkout_discount');
+      window.location.href = 'payment.html';
+    } catch (err) {
+      showToast('❌','Gagal',err.message);
+      btn.textContent = 'Lanjut ke Pembayaran →';
+      btn.disabled    = false;
+    }
+  }
+
+  loadCheckout();
+</script>
+</body>
+</html>

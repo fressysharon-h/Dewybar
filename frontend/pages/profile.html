@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profil — Dewy Bar 🌿</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    .profile-tabs { display: flex; gap: 8px; margin-bottom: 28px; flex-wrap: wrap; }
+    .profile-tab {
+      padding: 10px 22px; border-radius: 50px;
+      border: 2px solid var(--cream-dark); font-weight: 600; font-size: .9rem;
+      color: var(--text-mid); cursor: pointer; transition: var(--transition); background: var(--white);
+    }
+    .profile-tab.active { background: var(--green-mid); color: var(--white); border-color: var(--green-mid); }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .order-card {
+      background: var(--white); border-radius: var(--radius);
+      padding: 20px; box-shadow: var(--shadow-sm); margin-bottom: 14px;
+    }
+    .order-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+    .order-status { padding: 4px 12px; border-radius: 50px; font-size: .78rem; font-weight: 700; }
+    .status-pending { background: #fff3cd; color: #856404; }
+    .status-paid    { background: #d4edda; color: #155724; }
+    .nutrisi-bar {
+      height: 8px; border-radius: 4px; background: var(--cream-dark); overflow: hidden; margin-top: 6px;
+    }
+    .nutrisi-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--green-mid), var(--green-light)); transition: width .8s ease; }
+    .edit-form { display: none; }
+    .edit-form.open { display: block; }
+    .profile-info-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 14px 0; border-bottom: 1px solid var(--cream-dark);
+      font-size: .92rem;
+    }
+    .profile-info-row:last-child { border: none; }
+    .profile-info-label { color: var(--text-mid); font-weight: 500; }
+    .profile-info-val   { font-weight: 600; text-align: right; max-width: 60%; }
+  </style>
+  <!-- Firebase SDK -->
+  <!-- Firebase SDK -->
+  
+  
+  
+</head>
+<body>
+
+<!-- ═══ NAVBAR ═══ -->
+<nav class="navbar">
+  <div class="navbar-inner">
+    <a href="home-loggedin.html" class="navbar-logo-wrap">
+      <img src="../images/logo-full.png" alt="Dewy Bar" style="height:48px;width:auto;object-fit:contain;">
+      <div class="navbar-logo-text">
+        <span class="navbar-logo-title">DEWY BAR</span>
+        <span class="navbar-logo-sub">Healthy Buddy</span>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="katalog.html">Katalog</a></li>
+      <li><a href="smartpo.html">Smart PO</a></li>
+      <li><a href="jejak-petani.html">Jejak Petani</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="keranjang.html" class="nav-cart">🛒 <span class="cart-badge">0</span></a>
+      <button onclick="doLogout()" class="btn btn-outline btn-sm" style="color:#e74c3c;border-color:#e74c3c;">🚪 Keluar</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══ PROFILE HEADER ═══ -->
+<section class="profile-header">
+  <div class="container">
+    <div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap;">
+      <div class="profile-avatar" id="avatarInitial">?</div>
+      <div>
+        <div style="font-size:.85rem;opacity:.75;margin-bottom:4px;">Profil Kamu 👤</div>
+        <h1 style="font-size:2rem;margin-bottom:4px;" id="profileName">—</h1>
+        <div style="opacity:.8;font-size:.9rem;" id="profileEmail">—</div>
+        <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;">
+          <span style="background:rgba(255,255,255,.15);padding:5px 14px;border-radius:50px;font-size:.8rem;">
+            📍 <span id="profileCity">—</span>
+          </span>
+          <span style="background:rgba(255,255,255,.15);padding:5px 14px;border-radius:50px;font-size:.8rem;">
+            🌿 Member Dewy Bar
+          </span>
+        </div>
+      </div>
+    </div>
+    <p style="opacity:.7;margin-top:16px;font-style:italic;font-size:.9rem;">
+      "Pantau aktivitas dan nutrisimu di sini"
+    </p>
+  </div>
+</section>
+
+<!-- ═══ PROFILE CONTENT ═══ -->
+<section class="section">
+  <div class="container">
+
+    <!-- Tabs -->
+    <div class="profile-tabs">
+      <button class="profile-tab active" onclick="switchTab('info')">👤 Info Akun</button>
+      <button class="profile-tab" onclick="switchTab('orders')">📦 Riwayat Pesanan</button>
+      <button class="profile-tab" onclick="switchTab('nutrisi')">💊 Nutrisi</button>
+      <button class="profile-tab" onclick="switchTab('preorders')">📅 Pre-Order</button>
+    </div>
+
+    <!-- TAB: Info -->
+    <div class="tab-content active" id="tab-info">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;" id="infoGrid">
+        <div style="background:var(--white);border-radius:var(--radius);padding:28px;box-shadow:var(--shadow-sm);">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+            <h3 style="font-family:'Manrope',sans-serif;font-weight:700;">Data Pribadi</h3>
+            <button onclick="toggleEdit()" class="btn btn-outline btn-sm" id="editBtn">✏️ Edit</button>
+          </div>
+
+          <!-- Read view -->
+          <div id="infoReadView">
+            <div class="profile-info-row"><span class="profile-info-label">Nama Lengkap</span><span class="profile-info-val" id="infoName">—</span></div>
+            <div class="profile-info-row"><span class="profile-info-label">Email</span><span class="profile-info-val" id="infoEmail">—</span></div>
+            <div class="profile-info-row"><span class="profile-info-label">No. HP</span><span class="profile-info-val" id="infoPhone">—</span></div>
+            <div class="profile-info-row"><span class="profile-info-label">Alamat</span><span class="profile-info-val" id="infoAddress">—</span></div>
+          </div>
+
+          <!-- Edit view -->
+          <div class="edit-form" id="editForm">
+            <div class="form-group"><label>Nama Lengkap</label><input type="text" id="editName" class="form-control" /></div>
+            <div class="form-group"><label>No. HP</label><input type="text" id="editPhone" class="form-control" /></div>
+            <div class="form-group"><label>Alamat</label><input type="text" id="editAddress" class="form-control" /></div>
+            <div style="display:flex;gap:8px;">
+              <button onclick="toggleEdit()" class="btn btn-outline btn-sm">Batal</button>
+              <button onclick="saveProfile()" class="btn btn-primary btn-sm">Simpan</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="background:var(--white);border-radius:var(--radius);padding:28px;box-shadow:var(--shadow-sm);">
+          <h3 style="font-family:'Manrope',sans-serif;font-weight:700;margin-bottom:20px;">Aktivitas</h3>
+          <div class="nutrisi-grid" id="activityGrid">
+            <div class="nutrisi-card"><div class="nutrisi-icon">📦</div><div class="nutrisi-val" id="actOrders">0</div><div class="nutrisi-label">Total Pesanan</div></div>
+            <div class="nutrisi-card"><div class="nutrisi-icon">🌿</div><div class="nutrisi-val" id="actKg">0g</div><div class="nutrisi-label">Buah Dibeli</div></div>
+            <div class="nutrisi-card"><div class="nutrisi-icon">💰</div><div class="nutrisi-val" id="actSpend">Rp0</div><div class="nutrisi-label">Total Belanja</div></div>
+            <div class="nutrisi-card"><div class="nutrisi-icon">⭐</div><div class="nutrisi-val">5.0</div><div class="nutrisi-label">Rating Kamu</div></div>
+          </div>
+          <div style="margin-top:20px;">
+            <a href="katalog.html" class="btn btn-primary btn-full">🛍️ Ke Katalog</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: Orders -->
+    <div class="tab-content" id="tab-orders">
+      <div id="ordersList">
+        <div style="text-align:center;padding:60px;">
+          <div class="spinner" style="margin:0 auto;"></div>
+          <p style="margin-top:12px;color:var(--text-light);">Memuat riwayat...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: Nutrisi -->
+    <div class="tab-content" id="tab-nutrisi">
+      <div style="background:var(--white);border-radius:var(--radius);padding:32px;box-shadow:var(--shadow-sm);">
+        <h3 style="font-family:'Manrope',sans-serif;font-weight:700;margin-bottom:8px;">Total Nutrisi dari Pembelianmu</h3>
+        <p style="color:var(--text-mid);font-size:.9rem;margin-bottom:28px;">Berdasarkan semua produk yang pernah kamu beli di Dewy Bar</p>
+
+        <div class="nutrisi-grid" id="nutrisiCards">
+          <div class="nutrisi-card"><div class="nutrisi-icon">🍊</div><div class="nutrisi-val" id="nvitC">—</div><div class="nutrisi-label">Vitamin C (mg)</div></div>
+          <div class="nutrisi-card"><div class="nutrisi-icon">🥕</div><div class="nutrisi-val" id="nvitA">—</div><div class="nutrisi-label">Vitamin A (IU)</div></div>
+          <div class="nutrisi-card"><div class="nutrisi-icon">🟡</div><div class="nutrisi-val" id="nvitB">—</div><div class="nutrisi-label">Vitamin B6 (mg)</div></div>
+          <div class="nutrisi-card"><div class="nutrisi-icon">🫀</div><div class="nutrisi-val" id="nkali">—</div><div class="nutrisi-label">Kalium (mg)</div></div>
+          <div class="nutrisi-card"><div class="nutrisi-icon">🌿</div><div class="nutrisi-val" id="nserat">—</div><div class="nutrisi-label">Serat (g)</div></div>
+          <div class="nutrisi-card"><div class="nutrisi-icon">⚡</div><div class="nutrisi-val" id="nanti">—</div><div class="nutrisi-label">Antioksidan (%)</div></div>
+        </div>
+
+        <div style="margin-top:32px;">
+          <h4 style="font-family:'Manrope',sans-serif;font-weight:700;margin-bottom:16px;">Progress Nutrisi Mingguan</h4>
+          <div id="nutrisiProgress"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: Pre-orders -->
+    <div class="tab-content" id="tab-preorders">
+      <div id="preordersList">
+        <div style="text-align:center;padding:60px;">
+          <div class="spinner" style="margin:0 auto;"></div>
+          <p style="margin-top:12px;color:var(--text-light);">Memuat pre-order...</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<script src="app.js"></script>
+
+<script>
+  requireAuth();
+
+  const emojiMap = { apel:'🍎', mangga:'🥭', pisang:'🍌', pepaya:'🧡', semangka:'🍉', jeruk:'🍊', jus:'🥤', smoothie:'🥤', fruit:'🍱' };
+  function getEmoji(n) { return Object.entries(emojiMap).find(([k]) => n.toLowerCase().includes(k))?.[1] || '🍃'; }
+
+  // ── Load user info ────────────────────────────────────────
+  async function loadProfile() {
+    try {
+      const u = await API.me();
+      document.getElementById('avatarInitial').textContent = u.name.charAt(0).toUpperCase();
+      document.getElementById('profileName').textContent   = u.name;
+      document.getElementById('profileEmail').textContent  = u.email;
+      document.getElementById('profileCity').textContent   = u.address ? u.address.split(',').pop().trim() : '—';
+
+      document.getElementById('infoName').textContent    = u.name;
+      document.getElementById('infoEmail').textContent   = u.email;
+      document.getElementById('infoPhone').textContent   = u.phone    || '—';
+      document.getElementById('infoAddress').textContent = u.address  || '—';
+
+      document.getElementById('editName').value    = u.name;
+      document.getElementById('editPhone').value   = u.phone   || '';
+      document.getElementById('editAddress').value = u.address || '';
+
+    } catch (err) { showToast('❌','Error',err.message); }
+  }
+
+  // ── Edit profile toggle ───────────────────────────────────
+  function toggleEdit() {
+    const form  = document.getElementById('editForm');
+    const read  = document.getElementById('infoReadView');
+    const btn   = document.getElementById('editBtn');
+    const open  = form.classList.contains('open');
+    form.classList.toggle('open', !open);
+    read.style.display = open ? 'block' : 'none';
+    btn.textContent    = open ? '✏️ Edit' : '× Batal';
+  }
+
+  async function saveProfile() {
+    const name    = document.getElementById('editName').value.trim();
+    const phone   = document.getElementById('editPhone').value.trim();
+    const address = document.getElementById('editAddress').value.trim();
+    document.getElementById('infoName').textContent    = name;
+    document.getElementById('infoPhone').textContent   = phone   || '—';
+    document.getElementById('infoAddress').textContent = address || '—';
+    document.getElementById('profileName').textContent = name;
+    const u = Auth.getUser();
+    if (u) { 
+      u.name = name; u.phone = phone; u.address = address; 
+      Auth.setSession(Auth.getToken(), u);
+      // Save to Firestore
+      try {
+        const db = getDb();
+        if (db && u.uid) {
+          await db.collection('users').doc(u.uid).update({ name, phone, address });
+        }
+      } catch(e) {}
+    }
+    toggleEdit();
+    showToast('✅','Tersimpan!','Profil kamu berhasil diperbarui');
+  }
+
+  // ── Tab switching ─────────────────────────────────────────
+  function switchTab(tab) {
+    document.querySelectorAll('.profile-tab').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    event.target.classList.add('active');
+    document.getElementById('tab-' + tab).classList.add('active');
+
+    if (tab === 'orders')    loadOrders();
+    if (tab === 'preorders') loadPreOrders();
+    if (tab === 'nutrisi')   loadNutrisi();
+  }
+
+  // ── Orders ────────────────────────────────────────────────
+  async function loadOrders() {
+    try {
+      const orders = await API.getOrders();
+      const el     = document.getElementById('ordersList');
+
+      // Update activity stats
+      const totalSpend = orders.reduce((s,o) => s + o.total, 0);
+      const totalKg    = orders.reduce((s,o) => s + o.items.reduce((ss,i) => ss + (i.product?.weight||0)*i.qty, 0), 0);
+      document.getElementById('actOrders').textContent = orders.length;
+      document.getElementById('actKg').textContent     = totalKg > 0 ? (totalKg/1000).toFixed(1)+'kg' : '0g';
+      document.getElementById('actSpend').textContent  = 'Rp'+(totalSpend/1000).toFixed(0)+'K';
+
+      if (!orders.length) {
+        el.innerHTML = `<div style="text-align:center;padding:80px 20px;">
+          <div style="font-size:4rem;margin-bottom:16px;">📦</div>
+          <h3>Belum ada pesanan</h3>
+          <p style="color:var(--text-mid);margin:12px 0 24px;">Yuk mulai belanja buah segar!</p>
+          <a href="katalog.html" class="btn btn-primary">Belanja Sekarang</a>
+        </div>`;
+        return;
+      }
+
+      el.innerHTML = orders.map(o => `
+        <div class="order-card">
+          <div class="order-header">
+            <div>
+              <span style="font-weight:700;color:var(--green-deep);">#Pesanan-${o.id}</span>
+              <span style="margin-left:10px;font-size:.82rem;color:var(--text-light);">${o.created_at}</span>
+            </div>
+            <span class="order-status status-${o.status}">${o.status === 'paid' ? '✅ Dibayar' : '⏳ Menunggu'}</span>
+          </div>
+          <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--cream-dark);">
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+              ${o.items.map(i => `
+                <span style="background:var(--green-pale);padding:4px 10px;border-radius:50px;font-size:.8rem;">
+                  ${getEmoji(i.name||i.product?.name||'')} ${i.name||i.product?.name||'—'} ×${i.qty}
+                </span>`).join('')}
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+              <span style="font-size:.85rem;color:var(--text-mid);">📍 ${o.address}</span>
+              <span style="font-weight:700;color:var(--green-deep);font-size:1rem;">${formatRp(o.total)}</span>
+            </div>
+          </div>
+        </div>`).join('');
+    } catch (err) {
+      document.getElementById('ordersList').innerHTML =
+        `<p style="color:#e74c3c;text-align:center;padding:40px;">Gagal memuat: ${err.message}</p>`;
+    }
+  }
+
+  // ── Pre-orders ────────────────────────────────────────────
+  async function loadPreOrders() {
+    try {
+      const pos = await API.getPreOrders();
+      const el  = document.getElementById('preordersList');
+      if (!pos.length) {
+        el.innerHTML = `<div style="text-align:center;padding:80px 20px;">
+          <div style="font-size:4rem;margin-bottom:16px;">📅</div>
+          <h3>Belum ada pre-order</h3>
+          <a href="smartpo.html" class="btn btn-primary" style="margin-top:16px;">Buat Pre-Order</a>
+        </div>`;
+        return;
+      }
+      el.innerHTML = pos.map(po => `
+        <div class="order-card">
+          <div class="order-header">
+            <span style="font-weight:700;color:var(--green-deep);">#PO-${po.id}</span>
+            <span class="order-status status-${po.status === 'scheduled' ? 'pending' : 'paid'}">${po.status === 'scheduled' ? '📅 Terjadwal' : '✅ Selesai'}</span>
+          </div>
+          <div style="margin-top:10px;font-size:.88rem;color:var(--text-mid);display:flex;gap:16px;flex-wrap:wrap;">
+            <span>📅 ${po.date}</span>
+            <span>📍 ${po.location}</span>
+            <span>🛒 ${po.items.length} item</span>
+          </div>
+        </div>`).join('');
+    } catch (err) {
+      document.getElementById('preordersList').innerHTML =
+        `<p style="color:#e74c3c;padding:40px;text-align:center;">Gagal memuat: ${err.message}</p>`;
+    }
+  }
+
+  // ── Nutrisi tracker ───────────────────────────────────────
+  async function loadNutrisi() {
+    try {
+      const orders = await API.getOrders();
+      const totals = { vitC: 0, vitA: 0, vitB: 0, kalium: 0, serat: 0, anti: 0 };
+
+      // Simulate nutrisi calculation from products
+      const nutrisiDb = {
+        1:  { vitC:120, vitA:200,  vitB:.4, kalium:290, serat:4,  anti:85 },
+        2:  { vitC:100, vitA:180,  vitB:.3, kalium:260, serat:3.5,anti:78 },
+        3:  { vitC:190, vitA:2600, vitB:.2, kalium:340, serat:2,  anti:92 },
+        4:  { vitC: 15, vitA: 90,  vitB:.5, kalium:420, serat:3,  anti:62 },
+        5:  { vitC:122, vitA:3200, vitB:.5, kalium:310, serat:3,  anti:95 },
+        6:  { vitC: 23, vitA: 960, vitB:.2, kalium:320, serat:1,  anti:70 },
+        7:  { vitC:100, vitA: 300, vitB:.1, kalium:370, serat:4,  anti:80 },
+        8:  { vitC:150, vitA:3200, vitB:.5, kalium:310, serat:1,  anti:95 },
+        9:  { vitC:180, vitA:2800, vitB:.6, kalium:450, serat:4,  anti:98 },
+        10: { vitC:130, vitA:1500, vitB:.4, kalium:380, serat:5,  anti:90 },
+      };
+
+      orders.forEach(o => {
+        o.items.forEach(i => {
+          const n = nutrisiDb[i.product?.id];
+          if (!n) return;
+          totals.vitC   += n.vitC   * i.qty;
+          totals.vitA   += n.vitA   * i.qty;
+          totals.vitB   += n.vitB   * i.qty;
+          totals.kalium += n.kalium * i.qty;
+          totals.serat  += n.serat  * i.qty;
+          totals.anti   += n.anti;
+        });
+      });
+
+      document.getElementById('nvitC').textContent = totals.vitC.toFixed(0);
+      document.getElementById('nvitA').textContent = totals.vitA.toFixed(0);
+      document.getElementById('nvitB').textContent = totals.vitB.toFixed(1);
+      document.getElementById('nkali').textContent = totals.kalium.toFixed(0);
+      document.getElementById('nserat').textContent = totals.serat.toFixed(1);
+      document.getElementById('nanti').textContent = Math.min(100, (totals.anti / Math.max(orders.length,1))).toFixed(0) + '%';
+
+      const nutrients = [
+        { label: 'Vitamin C', val: totals.vitC, max: 1000, color: '#e67e22' },
+        { label: 'Vitamin A', val: totals.vitA, max: 10000, color: '#e74c3c' },
+        { label: 'Kalium',    val: totals.kalium, max: 5000, color: '#27ae60' },
+        { label: 'Serat',     val: totals.serat, max: 50, color: '#8e44ad' },
+      ];
+      document.getElementById('nutrisiProgress').innerHTML = nutrients.map(n => `
+        <div style="margin-bottom:16px;">
+          <div style="display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:6px;">
+            <span style="font-weight:600;">${n.label}</span>
+            <span style="color:var(--text-mid);">${n.val.toFixed(0)} / ${n.max}</span>
+          </div>
+          <div class="nutrisi-bar">
+            <div class="nutrisi-fill" style="width:${Math.min(100,(n.val/n.max)*100).toFixed(1)}%;background:${n.color};"></div>
+          </div>
+        </div>`).join('');
+
+    } catch (err) {
+      document.getElementById('nutrisiCards').innerHTML =
+        `<p style="color:#e74c3c;grid-column:1/-1;">Gagal memuat nutrisi: ${err.message}</p>`;
+    }
+  }
+
+  // ── Logout ────────────────────────────────────────────────
+  async function doLogout() {
+    try { await API.logout(); } catch (_) {}
+    Auth.clear();
+    window.location.href = 'index.html';
+  }
+
+  // ── Init ──────────────────────────────────────────────────
+  loadProfile();
+  loadOrders(); // load for activity stats on info tab
+</script>
+</body>
+</html>

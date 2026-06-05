@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Beranda — Dewy Bar 🌿</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <style>
+    .greeting-hero {
+      background: linear-gradient(135deg, var(--green-deep) 0%, var(--green-mid) 60%, #5dba8a 100%);
+      padding: 120px 0 72px; color: var(--white); position: relative; overflow: hidden;
+    }
+    .greeting-hero::before {
+      content: '🍎🌿🍊🌱🍇'; position: absolute;
+      font-size: 8rem; opacity: .06; right: -40px; top: -20px; letter-spacing: 20px;
+    }
+    .greeting-hero .subtitle { opacity: .8; font-size: 1.05rem; margin-top: 8px; }
+    .quick-actions {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px; margin-top: 40px;
+    }
+    .quick-btn {
+      background: rgba(255,255,255,.15); backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,.25); border-radius: var(--radius);
+      padding: 20px; text-align: center; color: var(--white);
+      transition: var(--transition); cursor: pointer; text-decoration: none;
+    }
+    .quick-btn:hover { background: rgba(255,255,255,.25); transform: translateY(-4px); }
+    .quick-btn-icon { font-size: 2rem; margin-bottom: 8px; }
+    .quick-btn-label { font-weight: 600; font-size: .9rem; }
+    .section-with-bg { background: var(--cream-dark); }
+    .horizontal-scroll {
+      display: flex; gap: 20px; overflow-x: auto; padding-bottom: 12px;
+      scrollbar-width: thin; scrollbar-color: var(--green-light) transparent;
+    }
+    .horizontal-scroll .product-card { min-width: 220px; flex-shrink: 0; }
+    .nav-dropdown { position: relative; }
+    .nav-dropdown-menu {
+      position: absolute; top: calc(100% + 8px); right: 0;
+      background: var(--white); border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-lg); min-width: 200px; overflow: hidden;
+      opacity: 0; pointer-events: none; transform: translateY(-8px);
+      transition: var(--transition); z-index: 100;
+    }
+    .nav-dropdown:hover .nav-dropdown-menu,
+    .nav-dropdown.open .nav-dropdown-menu {
+      opacity: 1; pointer-events: all; transform: translateY(0);
+    }
+    .nav-dropdown-menu a {
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px 18px; font-size: .9rem; color: var(--text-dark);
+      font-weight: 500; transition: var(--transition); border-bottom: 1px solid var(--cream-dark);
+    }
+    .nav-dropdown-menu a:last-child { border: none; }
+    .nav-dropdown-menu a:hover { background: var(--green-pale); color: var(--green-deep); }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Firebase SDK -->
+  <!-- Firebase SDK -->
+  
+  
+  
+</head>
+<body>
+
+<!-- ═══ NAVBAR (logged in) ═══ -->
+<nav class="navbar">
+  <div class="navbar-inner">
+    <a href="home-loggedin.html" class="navbar-logo-wrap">
+      <img src="../images/logo-full.png" alt="Dewy Bar" style="height:48px;width:auto;object-fit:contain;">
+      <div class="navbar-logo-text">
+        <span class="navbar-logo-title">DEWY BAR</span>
+        <span class="navbar-logo-sub">Healthy Buddy</span>
+      </div>
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="katalog.html">Katalog</a></li>
+      <li><a href="smartpo.html">Smart PO</a></li>
+      <li><a href="jejak-petani.html">Jejak Petani</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="#about">About Us</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="keranjang.html" class="nav-cart" aria-label="Keranjang">
+        🛒 Keranjang <span class="cart-badge">0</span>
+      </a>
+      <div class="nav-dropdown" id="profileMenu">
+        <button style="display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:50px;background:var(--green-pale);font-weight:600;font-size:.9rem;cursor:pointer;">
+          👤 <span id="navUserName">Profil</span> ▾
+        </button>
+        <div class="nav-dropdown-menu">
+          <a href="profile.html">👤 Profil Saya</a>
+          <a href="katalog.html">🛍️ Katalog</a>
+          <a href="smartpo.html">📅 Smart PO</a>
+          <a href="jejak-petani.html">🌾 Jejak Petani</a>
+          <a href="#" id="logoutBtn" style="color:#e74c3c;">🚪 Keluar</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══ GREETING HERO ═══ -->
+<section class="greeting-hero">
+  <div class="container">
+    <div class="badge-pill" style="background:rgba(255,255,255,.2);color:white;">Selamat Datang Kembali 👋</div>
+    <h1 style="margin-top:12px;" id="greetingTitle">Halo! Siap hidup lebih segar hari ini?</h1>
+    <p class="subtitle">Rekomendasi terbaik untuk kamu hari ini 🌿</p>
+
+    <div class="quick-actions">
+      <a href="katalog.html" class="quick-btn">
+        <div class="quick-btn-icon">🛍️</div>
+        <div class="quick-btn-label">Katalog</div>
+      </a>
+      <a href="smartpo.html" class="quick-btn">
+        <div class="quick-btn-icon">📅</div>
+        <div class="quick-btn-label">Smart PO</div>
+      </a>
+      <a href="jejak-petani.html" class="quick-btn">
+        <div class="quick-btn-icon">🌾</div>
+        <div class="quick-btn-label">Jejak Petani</div>
+      </a>
+      <a href="keranjang.html" class="quick-btn">
+        <div class="quick-btn-icon">🛒</div>
+        <div class="quick-btn-label">Keranjang</div>
+      </a>
+      <a href="profile.html" class="quick-btn">
+        <div class="quick-btn-icon">👤</div>
+        <div class="quick-btn-label">Profil</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FLASH SALE ═══ -->
+<section class="section">
+  <div class="container">
+    <div class="flash-sale-banner">
+      <div>
+        <h3>⚡ Flash Sale Hari Ini!</h3>
+        <p style="opacity:.85;">Penawaran terbatas — dapatkan produk segar dengan harga spesial</p>
+      </div>
+      <a href="katalog.html?filter=flash_sale" class="btn btn-gold">Lihat Semua →</a>
+    </div>
+    <div class="horizontal-scroll" id="flashSaleProducts">
+      <div style="display:flex;align-items:center;gap:12px;padding:40px;color:var(--text-light);">
+        <div class="spinner"></div> Memuat produk...
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ BEST SELLERS ═══ -->
+<section class="section section-with-bg">
+  <div class="container">
+    <div class="section-header fade-up">
+      <div class="badge-pill">🏆 Terlaris</div>
+      <h2>Best Seller Minggu Ini</h2>
+      <p>Produk yang paling banyak dibeli pelanggan setia Dewy Bar</p>
+    </div>
+    <div class="grid-4" id="bestSellerProducts">
+      <div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-light);">
+        <div class="spinner" style="margin:0 auto;"></div>
+        <p style="margin-top:12px;">Memuat produk...</p>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:36px;">
+      <a href="katalog.html" class="btn btn-outline">Lihat Semua Produk →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ ABOUT / FAQ ═══ -->
+<section class="section" id="about">
+  <div class="container">
+    <div class="section-header fade-up">
+      <div class="badge-pill">Tentang Kami</div>
+      <h2>Mengapa Dewy Bar?</h2>
+    </div>
+    <div class="benefits-grid">
+      <div class="benefit-card fade-up">
+        <div class="benefit-icon">🌱</div>
+        <h3>Langsung dari Petani</h3>
+        <p>Tanpa perantara. Transparansi penuh dari kebun ke tanganmu.</p>
+      </div>
+      <div class="benefit-card fade-up">
+        <div class="benefit-icon">📦</div>
+        <h3>Smart Pre-Order</h3>
+        <p>Jadwalkan pesanan fleksibel, lihat siapa yang order di lokasi sama.</p>
+      </div>
+      <div class="benefit-card fade-up">
+        <div class="benefit-icon">💊</div>
+        <h3>Tracker Nutrisi</h3>
+        <p>Pantau vitamin & nutrisi dari semua pembelianmu di halaman profil.</p>
+      </div>
+      <div class="benefit-card fade-up">
+        <div class="benefit-icon">⚡</div>
+        <h3>Flash Sale Harian</h3>
+        <p>Harga spesial setiap hari untuk produk segar pilihan.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <img src="../images/logo-full.png" alt="Dewy Bar" style="height:64px;width:auto;object-fit:contain;margin-bottom:16px;">
+        <p class="footer-desc">Platform buah segar langsung dari petani ke konsumen.</p>
+        <div class="footer-social">
+          <a href="#" class="social-btn"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="social-btn"><i class="fab fa-tiktok"></i></a>
+          <a href="#" class="social-btn"><i class="fab fa-facebook"></i></a>
+          <a href="#" class="social-btn"><i class="fab fa-linkedin"></i></a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Menu</h4>
+        <ul>
+          <li><a href="katalog.html">Katalog</a></li>
+          <li><a href="smartpo.html">Smart PO</a></li>
+          <li><a href="jejak-petani.html">Jejak Petani</a></li>
+          <li><a href="profile.html">Profil</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Bantuan</h4>
+        <ul>
+          <li><a href="#faq">FAQ</a></li>
+          <li><a href="#about">About Us</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Kontak</h4>
+        <ul>
+          <li><a href="#">📍 Malang, Jawa Timur</a></li>
+          <li><a href="#">✉️ dewybar@gmail.com.id</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Dewy Bar. Dibuat dengan 💚 untuk Indonesia yang lebih sehat.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+
+<script>
+  requireAuth();
+
+  // Greeting
+  const user = Auth.getUser();
+  if (user) {
+    document.getElementById('greetingTitle').textContent =
+      `Halo, ${user.name}! Siap hidup lebih segar hari ini? 🌿`;
+    document.getElementById('navUserName').textContent = user.name.split(' ')[0];
+  }
+
+  // Logout
+  document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+    e.preventDefault();
+    try { await API.logout(); } catch (_) {}
+    Auth.clear();
+    window.location.href = 'index.html';
+  });
+
+  // Profile dropdown
+  document.getElementById('profileMenu').addEventListener('click', function() {
+    this.classList.toggle('open');
+  });
+  document.addEventListener('click', (e) => {
+    if (!document.getElementById('profileMenu').contains(e.target))
+      document.getElementById('profileMenu').classList.remove('open');
+  });
+
+  // Create product card HTML
+  function createCard(p) {
+    const price    = p.flash_sale ? p.sale_price : p.price;
+    const emoji    = { apel:'🍎', mangga:'🥭', pisang:'🍌', pepaya:'🧡', semangka:'🍉', jeruk:'🍊', jus:'🥤', smoothie:'🥤', fruit:'🍱' };
+    const key      = Object.keys(emoji).find(k => p.name.toLowerCase().includes(k)) || 'buah';
+    const emojiChar = emoji[key] || '🍃';
+    const badge    = p.flash_sale
+      ? `<span class="product-badge sale">⚡ Flash Sale</span>`
+      : p.best_seller ? `<span class="product-badge">🏆 Best Seller</span>` : '';
+
+    return `
+      <div class="product-card">
+        ${badge}
+        <div class="product-img">${emojiChar}</div>
+        <div class="product-info">
+          <h3>${p.name}</h3>
+          <div class="product-meta">
+            <span class="stars">${renderStars(p.rating)}</span>
+            <span>${p.rating}</span>
+            <span>·</span>
+            <span>${p.weight}g</span>
+          </div>
+          <div class="product-price">
+            <span class="price-now">${formatRp(price)}</span>
+            ${p.flash_sale ? `<span class="price-old">${formatRp(p.price)}</span>` : ''}
+          </div>
+          <button class="btn btn-primary btn-full btn-sm" onclick="addCart(${p.id})">
+            + Tambah ke Keranjang
+          </button>
+        </div>
+      </div>`;
+  }
+
+  async function addCart(pid) {
+    try {
+      await API.addToCart({ product_id: pid, qty: 1 });
+      showToast('✅','Ditambahkan!','Produk berhasil masuk keranjang');
+      updateCartBadge();
+    } catch (err) {
+      showToast('❌','Gagal',err.message);
+    }
+  }
+
+  // Load flash sale
+  API.getProducts({ flash_sale: true }).then(products => {
+    const el = document.getElementById('flashSaleProducts');
+    el.innerHTML = products.map(createCard).join('');
+  }).catch(() => {
+    document.getElementById('flashSaleProducts').innerHTML =
+      '<p style="padding:20px;color:var(--text-light);">Gagal memuat produk. Coba muat ulang halaman.</p>';
+  });
+
+  // Load best sellers
+  API.getProducts({ best_seller: true }).then(products => {
+    const el = document.getElementById('bestSellerProducts');
+    el.innerHTML = products.map(createCard).join('');
+  }).catch(() => {
+    document.getElementById('bestSellerProducts').innerHTML =
+      '<p style="grid-column:1/-1;text-align:center;padding:20px;color:var(--text-light);">Gagal memuat produk. Coba muat ulang halaman.</p>';
+  });
+</script>
+</body>
+</html>
